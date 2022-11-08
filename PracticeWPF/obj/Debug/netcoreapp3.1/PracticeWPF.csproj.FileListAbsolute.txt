@@ -20,3 +20,5 @@ C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\Prac
 C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\PracticeWPF.genruntimeconfig.cache
 C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\ModBus.g.cs
 C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\ModBus.baml
+C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\DataBinding.g.cs
+C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\DataBinding.baml

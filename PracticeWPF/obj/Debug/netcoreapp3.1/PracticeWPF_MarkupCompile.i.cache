@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NETCOREAPP;NETCOREAPP3_1;
 C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\App.xaml
-2-1842402867
+3-344142828
 
-6-1955079404
+7-1912429770
 192-1533232326
-MainWindow.xaml;ModBus.xaml;
+DataBinding.xaml;MainWindow.xaml;ModBus.xaml;
 
 True
 

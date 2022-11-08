@@ -26,5 +26,10 @@ namespace PracticeWPF
         {
 
         }
+
+        private void btnOpen_Click(object sender, RoutedEventArgs e)
+        {
+            ProgressBarOpen.Value = 100;
+        }
     }
 }
