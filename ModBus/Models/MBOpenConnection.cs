@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
-using System.IO.Ports;
+
 using Modbus.Device;
+using System.IO.Ports;
 
 namespace ModBus.Models
 {
@@ -30,12 +31,18 @@ namespace ModBus.Models
         {
             try
             {
-              
+                SerialPort serialPort = new SerialPort(); //Create a new SerialPort object.
+                serialPort.PortName = "COM4";
+                serialPort.BaudRate = 9600;
+                serialPort.DataBits = 8;
+                serialPort.Parity = Parity.None;
+                serialPort.StopBits = StopBits.One;
+                serialPort.Open();
+                ModbusSerialMaster master = ModbusSerialMaster.CreateRtu(serialPort);
             }
-            catch (Exception)
+            catch (Exception err)
             {
-
-                throw;
+                MessageBox.Show(err.Message);
             }
         }
     }

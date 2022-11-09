@@ -12,6 +12,9 @@ using System.Windows.Shapes;
 using ModBus.ViewModels;
 using Modbus.Device;
 using Modbus.IO;
+using System.IO.Ports;
+using ModBus.Models;
+
 namespace ModBus.Views
 {
     /// <summary>
@@ -19,7 +22,7 @@ namespace ModBus.Views
     /// </summary>
     public partial class ModBusGUI : Window
     {
-        private SerialPort serialPort = new SerialPort(); //Create a new SerialPort object.
+        //private SerialPort serialPort = new SerialPort(); //Create a new SerialPort object.
         private Modbus.Device.IModbusSerialMaster masterRtu, masterAscii;
         
         public ModBusGUI()
@@ -29,6 +32,8 @@ namespace ModBus.Views
         }
         private void OpenConnectionButton(object sender, RoutedEventArgs e)
         {
+            MBOpenConnection openConnection = new MBOpenConnection();
+            openConnection.OpenRTU();
             ProgressBarOpen.Value = 100;
         }
 

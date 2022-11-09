@@ -27,3 +27,11 @@ C:\Users\varad\source\repos\PracticeWPF\ModBus\obj\Debug\netcoreapp3.1\ModBus.cs
 C:\Users\varad\source\repos\PracticeWPF\ModBus\obj\Debug\netcoreapp3.1\ModBus.dll
 C:\Users\varad\source\repos\PracticeWPF\ModBus\obj\Debug\netcoreapp3.1\ModBus.pdb
 C:\Users\varad\source\repos\PracticeWPF\ModBus\obj\Debug\netcoreapp3.1\ModBus.genruntimeconfig.cache
+C:\Users\varad\source\repos\PracticeWPF\ModBus\bin\Debug\netcoreapp3.1\System.IO.Ports.dll
+C:\Users\varad\source\repos\PracticeWPF\ModBus\bin\Debug\netcoreapp3.1\runtimes\linux-arm\native\libSystem.IO.Ports.Native.so
+C:\Users\varad\source\repos\PracticeWPF\ModBus\bin\Debug\netcoreapp3.1\runtimes\linux-arm64\native\libSystem.IO.Ports.Native.so
+C:\Users\varad\source\repos\PracticeWPF\ModBus\bin\Debug\netcoreapp3.1\runtimes\linux-x64\native\libSystem.IO.Ports.Native.so
+C:\Users\varad\source\repos\PracticeWPF\ModBus\bin\Debug\netcoreapp3.1\runtimes\osx-arm64\native\libSystem.IO.Ports.Native.dylib
+C:\Users\varad\source\repos\PracticeWPF\ModBus\bin\Debug\netcoreapp3.1\runtimes\osx-x64\native\libSystem.IO.Ports.Native.dylib
+C:\Users\varad\source\repos\PracticeWPF\ModBus\bin\Debug\netcoreapp3.1\NModbus4.dll
+C:\Users\varad\source\repos\PracticeWPF\ModBus\bin\Debug\netcoreapp3.1\NModbus.dll

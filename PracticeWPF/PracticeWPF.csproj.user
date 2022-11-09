@@ -7,21 +7,84 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="CommandsInput.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="ControlTemplete.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="DataBinding.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="DataTrigger.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="EventTrigger.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="KeyboardInput.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="ModBus.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="MouseInput.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="WPFCommandLine.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="WPFResouces.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="WPFStyles.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="WPFTrigger.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="CommandsInput.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ControlTemplete.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="DataBinding.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="DataTrigger.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="EventTrigger.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="KeyboardInput.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="ModBus.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MouseInput.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ResourceDictionaries\DictionaryWithBrush.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="WPFCommandLine.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="WPFResouces.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="WPFStyles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="WPFTrigger.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

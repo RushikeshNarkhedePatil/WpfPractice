@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NETCOREAPP;NETCOREAPP3_1;
 C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\App.xaml
-3-344142828
+14-1300774796
 
-7-1912429770
+17-279413565
 192-1533232326
-DataBinding.xaml;MainWindow.xaml;ModBus.xaml;
+CommandsInput.xaml;ControlTemplete.xaml;DataBinding.xaml;DataTrigger.xaml;EventTrigger.xaml;KeyboardInput.xaml;MainWindow.xaml;ModBus.xaml;MouseInput.xaml;ResourceDictionaries\DictionaryWithBrush.xaml;WPFCommandLine.xaml;WPFResouces.xaml;WPFStyles.xaml;WPFTrigger.xaml;
 
-True
+False
 

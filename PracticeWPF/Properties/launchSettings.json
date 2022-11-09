@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PracticeWPF": {
+      "commandName": "Project",
+      "remoteDebugEnabled": false
+    }
+  }
+}
