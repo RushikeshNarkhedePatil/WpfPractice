@@ -1,0 +1,17 @@
+C:\Users\varad\source\repos\PracticeWPF\WPF3DGraphics\bin\Debug\WPF3DGraphics.exe.config
+C:\Users\varad\source\repos\PracticeWPF\WPF3DGraphics\bin\Debug\WPF3DGraphics.exe
+C:\Users\varad\source\repos\PracticeWPF\WPF3DGraphics\bin\Debug\WPF3DGraphics.pdb
+C:\Users\varad\source\repos\PracticeWPF\WPF3DGraphics\obj\Debug\WPF3DGraphics.csproj.AssemblyReference.cache
+C:\Users\varad\source\repos\PracticeWPF\WPF3DGraphics\obj\Debug\MainWindow.g.cs
+C:\Users\varad\source\repos\PracticeWPF\WPF3DGraphics\obj\Debug\App.g.cs
+C:\Users\varad\source\repos\PracticeWPF\WPF3DGraphics\obj\Debug\WPF3DGraphics_MarkupCompile.cache
+C:\Users\varad\source\repos\PracticeWPF\WPF3DGraphics\obj\Debug\WPF3DGraphics_MarkupCompile.lref
+C:\Users\varad\source\repos\PracticeWPF\WPF3DGraphics\obj\Debug\MainWindow.baml
+C:\Users\varad\source\repos\PracticeWPF\WPF3DGraphics\obj\Debug\WPF3DGraphics.g.resources
+C:\Users\varad\source\repos\PracticeWPF\WPF3DGraphics\obj\Debug\WPF3DGraphics.Properties.Resources.resources
+C:\Users\varad\source\repos\PracticeWPF\WPF3DGraphics\obj\Debug\WPF3DGraphics.csproj.GenerateResource.cache
+C:\Users\varad\source\repos\PracticeWPF\WPF3DGraphics\obj\Debug\WPF3DGraphics.csproj.CoreCompileInputs.cache
+C:\Users\varad\source\repos\PracticeWPF\WPF3DGraphics\obj\Debug\WPF3DGraphics.exe
+C:\Users\varad\source\repos\PracticeWPF\WPF3DGraphics\obj\Debug\WPF3DGraphics.pdb
+C:\Users\varad\source\repos\PracticeWPF\WPF3DGraphics\obj\Debug\WPF3DGraphics1.g.cs
+C:\Users\varad\source\repos\PracticeWPF\WPF3DGraphics\obj\Debug\WPF3DGraphics1.baml

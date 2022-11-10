@@ -61,7 +61,7 @@ namespace PracticeWPF {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/PracticeWPF;component/wpfresouces.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/PracticeWPF;V1.0.0.0;component/wpfresouces.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\WPFResouces.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

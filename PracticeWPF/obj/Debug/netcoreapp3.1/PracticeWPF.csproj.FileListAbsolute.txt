@@ -44,3 +44,13 @@ C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\Data
 C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\DataTrigger.baml
 C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\EventTrigger.g.cs
 C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\EventTrigger.baml
+C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\MyUserControl.g.cs
+C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\MyUserControl.baml
+C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\GeneratedInternalTypeHelper.g.cs
+C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\CustomContol.g.cs
+C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\CustomContol.baml
+C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\Themes\Generic.baml
+C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\WPFBehavior.g.cs
+C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\WPFBehavior.baml
+C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\WPFDragAndDrop.g.cs
+C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\WPFDragAndDrop.baml
