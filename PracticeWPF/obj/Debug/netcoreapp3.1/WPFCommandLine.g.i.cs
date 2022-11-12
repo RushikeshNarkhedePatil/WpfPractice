@@ -61,7 +61,7 @@ namespace PracticeWPF {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/PracticeWPF;V1.0.0.0;component/wpfcommandline.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/PracticeWPF;component/wpfcommandline.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\WPFCommandLine.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

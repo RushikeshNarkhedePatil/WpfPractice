@@ -1,0 +1,14 @@
+C:\Users\varad\source\repos\PracticeWPF\WPFMultimedia\bin\Debug\WPFMultimedia.exe.config
+C:\Users\varad\source\repos\PracticeWPF\WPFMultimedia\bin\Debug\WPFMultimedia.exe
+C:\Users\varad\source\repos\PracticeWPF\WPFMultimedia\bin\Debug\WPFMultimedia.pdb
+C:\Users\varad\source\repos\PracticeWPF\WPFMultimedia\obj\Debug\MainWindow.g.cs
+C:\Users\varad\source\repos\PracticeWPF\WPFMultimedia\obj\Debug\App.g.cs
+C:\Users\varad\source\repos\PracticeWPF\WPFMultimedia\obj\Debug\WPFMultimedia_MarkupCompile.cache
+C:\Users\varad\source\repos\PracticeWPF\WPFMultimedia\obj\Debug\WPFMultimedia_MarkupCompile.lref
+C:\Users\varad\source\repos\PracticeWPF\WPFMultimedia\obj\Debug\MainWindow.baml
+C:\Users\varad\source\repos\PracticeWPF\WPFMultimedia\obj\Debug\WPFMultimedia.g.resources
+C:\Users\varad\source\repos\PracticeWPF\WPFMultimedia\obj\Debug\WPFMultimedia.Properties.Resources.resources
+C:\Users\varad\source\repos\PracticeWPF\WPFMultimedia\obj\Debug\WPFMultimedia.csproj.GenerateResource.cache
+C:\Users\varad\source\repos\PracticeWPF\WPFMultimedia\obj\Debug\WPFMultimedia.csproj.CoreCompileInputs.cache
+C:\Users\varad\source\repos\PracticeWPF\WPFMultimedia\obj\Debug\WPFMultimedia.exe
+C:\Users\varad\source\repos\PracticeWPF\WPFMultimedia\obj\Debug\WPFMultimedia.pdb

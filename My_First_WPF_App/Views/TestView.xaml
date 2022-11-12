@@ -9,8 +9,7 @@
     <Grid>
         <StackPanel>
             <TextBox x:Name="txtMessage" HorizontalAlignment="Left"  
-            Text="{Binding TestModel.Message,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  
-            VerticalAlignment="Top" Height="49" Width="530"/>
+            Text="{Binding TestModel.Message,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Height="49" Width="501"/>
             <TextBlock x:Name="txtBlock" Text="{Binding TestModel.Message,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
     </Grid>

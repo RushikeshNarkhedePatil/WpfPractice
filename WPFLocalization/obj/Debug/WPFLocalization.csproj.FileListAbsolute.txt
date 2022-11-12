@@ -1,7 +1,6 @@
 C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\bin\Debug\WPFLocalization.exe.config
 C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\bin\Debug\WPFLocalization.exe
 C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\bin\Debug\WPFLocalization.pdb
-C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\bin\Debug\ru-RU\WPFLocalization.resources.dll
 C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\bin\Debug\en\WPFLocalization.resources.dll
 C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\obj\Debug\WPFLocalization.csproj.AssemblyReference.cache
 C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\obj\Debug\MainWindow.g.cs
@@ -11,11 +10,10 @@ C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\obj\Debug\WPFLocalizatio
 C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\obj\Debug\MainWindow.baml
 C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\obj\Debug\WPFLocalization.g.resources
 C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\obj\Debug\WPFLocalization.Properties.Resources.resources
-C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\obj\Debug\WPFLocalization.Properties.Resources.ru-RU.resources
 C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\obj\Debug\WPFLocalization.Properties.Resources.en.resources
 C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\obj\Debug\WPFLocalization.csproj.GenerateResource.cache
 C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\obj\Debug\WPFLocalization.csproj.CoreCompileInputs.cache
-C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\obj\Debug\ru-RU\WPFLocalization.resources.dll
 C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\obj\Debug\en\WPFLocalization.resources.dll
 C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\obj\Debug\WPFLocalization.exe
 C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\obj\Debug\WPFLocalization.pdb
+C:\Users\varad\source\repos\PracticeWPF\WPFLocalization\obj\Debug\WPFLocalization.Properties.Resources.ri-RU.resources

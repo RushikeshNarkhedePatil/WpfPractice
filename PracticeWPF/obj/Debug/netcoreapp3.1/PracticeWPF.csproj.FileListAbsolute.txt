@@ -54,3 +54,5 @@ C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\WPFB
 C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\WPFBehavior.baml
 C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\WPFDragAndDrop.g.cs
 C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\WPFDragAndDrop.baml
+C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\WPF2DGraphics1.g.cs
+C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\WPF2DGraphics1.baml

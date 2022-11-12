@@ -69,7 +69,7 @@ namespace PracticeWPF {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/PracticeWPF;V1.0.0.0;component/myusercontrol.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/PracticeWPF;component/myusercontrol.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\MyUserControl.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

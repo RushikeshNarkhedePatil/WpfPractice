@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
+using ModBusGUI.Views;
+using Prism.DryIoc;
+using Prism.Ioc;
 using System.Windows;
 
 namespace ModBusGUI
@@ -11,7 +9,16 @@ namespace ModBusGUI
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App : PrismApplication
     {
+        protected override Window CreateShell()
+        {
+            return Container.Resolve<ModBusMainWindow>();
+        }
+
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
+        {
+            
+        }
     }
 }
