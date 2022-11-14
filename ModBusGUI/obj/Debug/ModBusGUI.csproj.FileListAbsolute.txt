@@ -40,3 +40,5 @@ C:\Users\varad\source\repos\PracticeWPF\ModBusGUI\bin\Debug\System.Threading.Tas
 C:\Users\varad\source\repos\PracticeWPF\ModBusGUI\bin\Debug\Unity.Abstractions.pdb
 C:\Users\varad\source\repos\PracticeWPF\ModBusGUI\bin\Debug\Unity.Container.pdb
 C:\Users\varad\source\repos\PracticeWPF\ModBusGUI\obj\Debug\Views\ModBusMainWindow.baml
+C:\Users\varad\source\repos\PracticeWPF\ModBusGUI\bin\Debug\System.IO.Ports.dll
+C:\Users\varad\source\repos\PracticeWPF\ModBusGUI\bin\Debug\System.IO.Ports.xml
