@@ -18,6 +18,7 @@ namespace ModBusGUI.Views
             this.DataContext = new MBViewModel();
         }
         private SerialPort serialPort = new SerialPort(); //Create a new SerialPort object.
+        
         //private void OpenConnection_Button(object sender, RoutedEventArgs e)
         //{
             

@@ -47,24 +47,22 @@
                         <Label Grid.Row="1" Grid.Column="0" Content="Data Bit" Margin="10,23,0,0" Grid.RowSpan="2"/>
                         <Label Grid.Row="3" Grid.Column="0" Content="Parity Bit" Margin="10,0,0,23" Grid.RowSpan="2"/>
                         <Label Grid.Row="4" Grid.Column="0" Content="Stop Bit" Margin="10,0,0,0"/>
-                        <TextBox x:Name="txtPort" Grid.Row="0" Grid.Column="1" Text="{Binding MBModel.PortName, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
-                        <TextBox x:Name="txtBaudRate" Grid.Row="1" Grid.Column="1" Text="{Binding MBModel.BaudRate, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
-                        <TextBox x:Name="txtData" Grid.Row="2" Grid.Column="1" Text="{Binding MBModel.DataBits, Mode=TwoWay,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
+                        <TextBox x:Name="txtPort" Grid.Row="0" Grid.Column="1" Text="{Binding PortName, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
+                        <TextBox x:Name="txtBaudRate" Grid.Row="1" Grid.Column="1" Text="{Binding BaudRate, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
+                        <TextBox x:Name="txtData" Grid.Row="2" Grid.Column="1" Text="{Binding DataBits, Mode=TwoWay,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
                         <ComboBox x:Name="CombParityBit" Grid.Row="2" Grid.Column="1" Margin="0,22,10,5" Grid.RowSpan="2" 
-                                  SelectedItem="{Binding MBModel.Parity,Mode=TwoWay,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}">
+                                  SelectedValuePath="{Binding Parity}">
                             <ComboBoxItem Content="None"/>
                             <ComboBoxItem Content="Even"/>
                             <ComboBoxItem Content="Odd"/>
                         </ComboBox>
                         <ComboBox x:Name="CombStopBit" Grid.Row="3" Grid.Column="1" Margin="0,23,10,5" Grid.RowSpan="2"
-                                  SelectedIndex="0"
-                                  ItemsSource="{Binding MBModel}"
-                                  SelectedItem="{Binding StopBits, Mode=TwoWay,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}">
+                                  SelectedIndex="0">
                             <ComboBoxItem Content="One"/>
                             <ComboBoxItem Content="Two"/>
                         </ComboBox>
-                        <Button x:Name="btnOpen" Content="Open"  Command="{Binding ClickCommand}"  Grid.Row="4" Grid.Column="0" Margin="10,0,18,5.5" FontWeight="Bold" BorderBrush="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Background="#FF35A600" Height="19" Grid.RowSpan="2" VerticalAlignment="Bottom">
-           
+                        <Button x:Name="btnOpen" Content="Open"  Command="{Binding ClickCommandOpen}"  Grid.Row="4" Grid.Column="0" Margin="10,0,18,5.5" FontWeight="Bold" BorderBrush="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Background="#FF35A600" Height="19" Grid.RowSpan="2" VerticalAlignment="Bottom">
+
                         </Button>
                         <Button x:Name="btnClose" Content="Close" Grid.Row="5" Grid.Column="1" Margin="10,0,20,5" Background="#FFFD1515"/>
                     </Grid>
@@ -76,8 +74,8 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <RadioButton Content="RTU" Grid.Column="0" Margin="0,0,8,0" />
-                        <RadioButton Content="ASCII" Grid.Column="1" Margin="0,0,0,10" />
+                        <RadioButton Content="RTU" x:Name="radioRTU" Grid.Column="0" Margin="0,0,8,0" IsChecked="{Binding RTU, Mode=TwoWay}" />
+                        <RadioButton Content="ASCII" Grid.Column="1" Margin="0,0,0,10" IsChecked="{Binding ASCII, Mode=TwoWay}"/>
                     </Grid>
                 </GroupBox>
             </Grid>
@@ -107,9 +105,15 @@
                         <Label Content="Slave ID" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="64" Height="24"/>
                         <Label Content="Address" HorizontalAlignment="Left" VerticalAlignment="Center" Height="24" Grid.Row="1" Width="67" Margin="10,0,0,0"/>
                         <Label Content="Quentity" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Row="2" VerticalAlignment="Top" Width="57"/>
-                        <TextBox Grid.Column="1" HorizontalAlignment="Center" Text="10" TextWrapping="Wrap" VerticalAlignment="Top" Width="77" Height="20" Margin="3"/>
-                        <ComboBox Grid.Column="1" HorizontalAlignment="Center" Height="20" VerticalAlignment="Center" Width="77" Grid.Row="1" Margin="3"/>
-                        <TextBox Grid.Column="1" HorizontalAlignment="Center" Grid.Row="2" Text="4" TextWrapping="Wrap" VerticalAlignment="Top" Width="77" Height="20" Margin="3"/>
+                        <TextBox Grid.Column="1" HorizontalAlignment="Center" 
+                                 Text="{Binding MBModel.SlaveID,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
+                                 TextWrapping="Wrap" VerticalAlignment="Top" Width="77" Height="20" Margin="3"/>
+                        <TextBox Grid.Column="1" HorizontalAlignment="Center" Grid.Row="2" 
+                                 Text="{Binding MBModel.Quentity,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
+                                 TextWrapping="Wrap" VerticalAlignment="Top" Width="77" Height="20" Margin="3"/>
+                        <TextBox Grid.Column="1" HorizontalAlignment="Center"
+                                 Text="{Binding MBModel.Address,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
+                                 Height="20" Margin="11,1,11,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76" Grid.Row="1"/>
                     </Grid>
                     <!--Grid for Values-->
                     <GroupBox Header="Value" Height="40" Width="174" Margin="0,0,0,5">
@@ -136,12 +140,14 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Content="Read Coil" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="75"/>
-                        <Button Content="Clear" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="75"/>
+                        <Button Content="Read Coil" Command="{Binding ClickCommandRead}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="75"/>
+                        <Button Content="Clear" Command="{Binding ClickCommand}" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="75"/>
                     </Grid>
                     <ProgressBar x:Name="readProgressBar" Height="15" Width="175" Margin="2"/>
                 </StackPanel>
-                <ListView x:Name="ListViewRead" Grid.Row="0" Grid.Column="1" Height="169" VerticalAlignment="Top" Margin="5"/>
+                <ListView x:Name="ListViewRead" Grid.Row="0" Grid.Column="1">
+                    <ListViewItem Content="{Binding MBModel.Items}"></ListViewItem>
+                </ListView>
             </Grid>
         </GroupBox>
         <!--End Read Group Box-->
@@ -269,8 +275,8 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Content="Button" HorizontalAlignment="Center" Margin="5" VerticalAlignment="Top" Height="25" Width="50"/>
-                        <Button Content="Button" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="54"/>
+                        <Button Content="Write" HorizontalAlignment="Center" Margin="5" VerticalAlignment="Top" Height="25" Width="50"/>
+                        <Button Content="Clear" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="54"/>
                     </Grid>
                 </StackPanel>
                 <ListView Grid.Column="1" Margin="10,10,10,10"/>
