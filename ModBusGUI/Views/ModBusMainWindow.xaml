@@ -61,12 +61,15 @@
                             <ComboBoxItem Content="One"/>
                             <ComboBoxItem Content="Two"/>
                         </ComboBox>
-                        <Button x:Name="btnOpen" Content="Open"  Command="{Binding ClickCommandOpen}"  Grid.Row="4" Grid.Column="0" Margin="10,0,18,5.5" FontWeight="Bold" BorderBrush="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Background="#FF35A600" Height="19" Grid.RowSpan="2" VerticalAlignment="Bottom">
+                        <Button x:Name="btnOpen" Content="Open"  Command="{Binding ClickCommandOpen}"  
+                                Grid.Row="4" Grid.Column="0" Margin="10,0,18,5.5" FontWeight="Bold" 
+                                BorderBrush="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Background="#FF35A600" 
+                                Height="19" Grid.RowSpan="2" VerticalAlignment="Bottom">
 
                         </Button>
                         <Button x:Name="btnClose" Content="Close" Grid.Row="5" Grid.Column="1" Margin="10,0,20,5" Background="#FFFD1515"/>
                     </Grid>
-                    <ProgressBar x:Name="ProgressBarOpen" Height="15" Width="175" Margin="5"/>
+                    <ProgressBar x:Name="ProgressBarOpen" Height="15" Width="175" Margin="5" Value="{Binding Path=ProgressBar,Mode=OneWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
                 <GroupBox Header="Mode" Grid.Column="1" Margin="0,0,10,129">
                     <Grid Height="33" Margin="0,0,17,0">
@@ -106,13 +109,13 @@
                         <Label Content="Address" HorizontalAlignment="Left" VerticalAlignment="Center" Height="24" Grid.Row="1" Width="67" Margin="10,0,0,0"/>
                         <Label Content="Quentity" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Row="2" VerticalAlignment="Top" Width="57"/>
                         <TextBox Grid.Column="1" HorizontalAlignment="Center" 
-                                 Text="{Binding MBModel.SlaveID,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
+                                 Text="{Binding SlaveID,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
                                  TextWrapping="Wrap" VerticalAlignment="Top" Width="77" Height="20" Margin="3"/>
                         <TextBox Grid.Column="1" HorizontalAlignment="Center" Grid.Row="2" 
-                                 Text="{Binding MBModel.Quentity,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
+                                 Text="{Binding Quentity,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
                                  TextWrapping="Wrap" VerticalAlignment="Top" Width="77" Height="20" Margin="3"/>
                         <TextBox Grid.Column="1" HorizontalAlignment="Center"
-                                 Text="{Binding MBModel.Address,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
+                                 Text="{Binding Address,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
                                  Height="20" Margin="11,1,11,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76" Grid.Row="1"/>
                     </Grid>
                     <!--Grid for Values-->
@@ -126,8 +129,8 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <RadioButton Grid.Row="0" Grid.Column="0" Content="Coil"/>
-                            <RadioButton Grid.Row="0" Grid.Column="1" Content="Input" Margin="0,0,10,0"/>
+                            <RadioButton Grid.Row="0" Grid.Column="0" Content="Coil" IsChecked="{Binding Coil, Mode=TwoWay}"/>
+                            <RadioButton Grid.Row="0" Grid.Column="1" Content="Input" Margin="0,0,10,0" IsChecked="{Binding Input, Mode=TwoWay}"/>
                         </Grid>
                     </GroupBox>
                     <!--End Group for Values-->
@@ -174,8 +177,12 @@
                         <Label Content="Slave ID" Grid.Row="0" Grid.Column="0"/>
                         <Label Content="Address" Grid.Row="1" Grid.Column="0" Margin="0,0,10,5"/>
                         <Label Content="Write Data" Grid.Row="2" Grid.Column="0" Margin="0,0,5,10"/>
-                        <TextBox x:Name="txtSingleCoilSlaveID" Grid.Row="0" Grid.Column="1" Text="10" Margin="0,5,10,5"/>
-                        <TextBox x:Name="txtSingleCoilAddress" Grid.Row="1" Grid.Column="1" Text="3999" Margin="0,0,10,10"/>
+                        <TextBox x:Name="txtSingleCoilSlaveID" Grid.Row="0" Grid.Column="1" 
+                                 Text="{Binding SlaveID,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
+                                 Margin="0,5,10,5"/>
+                        <TextBox x:Name="txtSingleCoilAddress" Grid.Row="1" Grid.Column="1" 
+                                 Text="{Binding Address,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
+                                 Margin="0,0,10,10"/>
                         <TextBox x:Name="txtSingleCoilData" Grid.Row="2" Grid.Column="1" Text="true" Margin="0,0,10,18"/>
                     </Grid>
                     <GroupBox Header="Value" Height="45" Width="169">
@@ -187,8 +194,8 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <RadioButton Grid.Row="0" Grid.Column="0" Content="On" Margin="10,0,21,0"/>
-                            <RadioButton Grid.Row="0" Grid.Column="1" Content="Off" Margin="10,0,10,0"/>
+                            <RadioButton Grid.Row="0" Grid.Column="0" Content="On" Margin="10,0,21,0" IsChecked="{Binding radioOnSingle, Mode=TwoWay}"/>
+                            <RadioButton Grid.Row="0" Grid.Column="1" Content="Off" Margin="10,0,10,0" IsChecked="{Binding radioOffSingle, Mode=TwoWay}"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox Header="Select Coil Number" Height="38">
@@ -202,10 +209,10 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <RadioButton Grid.Row="0" Grid.Column="0" Content="Coil1"/>
-                            <RadioButton Grid.Row="0" Grid.Column="1" Content="Coil2"/>
-                            <RadioButton Grid.Row="0" Grid.Column="2" Content="Coil3"/>
-                            <RadioButton Grid.Row="0" Grid.Column="3" Content="Coil4"/>
+                            <RadioButton Grid.Row="0" Grid.Column="0" Content="Coil1" IsChecked="{Binding SingleCoil1, Mode=TwoWay}"/>
+                            <RadioButton Grid.Row="0" Grid.Column="1" Content="Coil2" IsChecked="{Binding SingleCoil2, Mode=TwoWay}"/>
+                            <RadioButton Grid.Row="0" Grid.Column="2" Content="Coil3" IsChecked="{Binding SingleCoil3, Mode=TwoWay}"/>
+                            <RadioButton Grid.Row="0" Grid.Column="3" Content="Coil4" IsChecked="{Binding SingleCoil4, Mode=TwoWay}"/>
                         </Grid>
                     </GroupBox>
                     <Grid Height="25">
@@ -213,7 +220,9 @@
                             <ColumnDefinition Width="57*"/>
                             <ColumnDefinition Width="55*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Content="Write" HorizontalAlignment="Center" VerticalAlignment="Center" Width="58" Height="25"/>
+                        <Button Content="Write" HorizontalAlignment="Center" 
+                                Command="{Binding CmdWriteSingleCoil}"
+                                VerticalAlignment="Center" Width="58" Height="25"/>
                         <Button Content="Clear" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="70" Height="25"/>
                     </Grid>
                 </StackPanel>
@@ -242,8 +251,12 @@
                         <Label Content="Slave ID" Grid.Row="0" Grid.Column="0"/>
                         <Label Content="Address" Grid.Row="1" Grid.Column="0"/>
                         <Label Content="Write Data" Grid.Row="2" Grid.Column="0" Margin="0,0,10,13"/>
-                        <TextBox x:Name="txtWriteMultiSlaveId" Grid.Row="0" Text="10" Grid.ColumnSpan="2" Margin="99,0,10,5"/>
-                        <TextBox x:Name="txtWriteMultiAddress" Grid.Row="1" Text="3999" Grid.ColumnSpan="2" Margin="99,0,10,5"/>
+                        <TextBox x:Name="txtWriteMultiSlaveId" Grid.Row="0" Grid.ColumnSpan="2" 
+                                 Text="{Binding SlaveID,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
+                                 Margin="99,0,10,5"/>
+                        <TextBox x:Name="txtWriteMultiAddress" Grid.Row="1" Grid.ColumnSpan="2" 
+                                 Text="{Binding Address,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
+                                 Margin="99,0,10,5"/>
                         <ComboBox Grid.Row="2" x:Name="CombWriteMultiCoil" Margin="5,0,10,21" Grid.Column="1"/>
                     </Grid>
                     <GroupBox Header="Value" Height="40" Width="157">
@@ -252,8 +265,10 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <RadioButton Grid.Row="0" Content="On" Margin="10,0,0,0"/>
-                            <RadioButton Content="Off" Margin="5,0,-10,0" Grid.Column="1" RenderTransformOrigin="0.811,0.477"/>
+                            <RadioButton Grid.Row="0" Content="On" Margin="10,0,0,0" 
+                                         IsChecked="{Binding radioOnMulti, Mode=TwoWay}"/>
+                            <RadioButton Content="Off" Margin="5,0,-10,0" Grid.Column="1" RenderTransformOrigin="0.811,0.477" 
+                                         IsChecked="{Binding radioOffMulti, Mode=TwoWay}"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox Header="Check Coils Number" Height="40">
@@ -264,10 +279,14 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <CheckBox Content="Coil1" Grid.Row="0" Grid.Column="0"/>
-                            <CheckBox Content="Coil2" Grid.Row="0" Grid.Column="1"/>
-                            <CheckBox Content="Coil3" Grid.Row="0" Grid.Column="2"/>
-                            <CheckBox Content="Coil4" Grid.Row="0" Grid.Column="3"/>
+                            <CheckBox Content="Coil1" Grid.Row="0" Grid.Column="0" 
+                                      IsChecked="{Binding CheckCoil1, Mode=TwoWay}"/>
+                            <CheckBox Content="Coil2" Grid.Row="0" Grid.Column="1"
+                                       IsChecked="{Binding CheckCoil2, Mode=TwoWay}"/>
+                            <CheckBox Content="Coil3" Grid.Row="0" Grid.Column="2"
+                                       IsChecked="{Binding CheckCoil3, Mode=TwoWay}"/>
+                            <CheckBox Content="Coil4" Grid.Row="0" Grid.Column="3"
+                                       IsChecked="{Binding CheckCoil4, Mode=TwoWay}"/>
                         </Grid>
                     </GroupBox>
                     <Grid Height="35">
@@ -275,7 +294,9 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Content="Write" HorizontalAlignment="Center" Margin="5" VerticalAlignment="Top" Height="25" Width="50"/>
+                        <Button Content="Write" HorizontalAlignment="Center" 
+                                Command="{Binding CmdWriteMultiCoil}"
+                                Margin="5" VerticalAlignment="Top" Height="25" Width="50"/>
                         <Button Content="Clear" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="54"/>
                     </Grid>
                 </StackPanel>

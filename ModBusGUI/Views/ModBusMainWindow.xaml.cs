@@ -36,5 +36,6 @@ namespace ModBusGUI.Views
         //        MessageBox.Show(ex.Message);
         //    }
         //}
+     
     }
 }

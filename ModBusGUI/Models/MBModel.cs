@@ -12,33 +12,16 @@ namespace ModBusGUI.Models
     {
         private SerialPort serialPort = new SerialPort(); //Create a new SerialPort object.
         private Modbus.Device.IModbusSerialMaster masterRtu, masterAscii;
-        //private String _PortName="COM4";
-        //private int _BaudRate;
-        //private int _DataBits;
-        //private SerialPort _Parity;
-        //private SerialPort _StopBits;
-        // private object serialPort;
-        private Parity parity;
-        private StopBits stopBits;
+        public bool[] ReadCoilData = { false, false, false, false };
+        private bool[] ReadInputData = { false, false, false, false };
         public MBModel()
-        { 
+        {
+
         }
         // Demo
-        private byte slaveID;
-        private ushort address;
-        private ushort quentity;
-
-        public bool[] ReadCoilData = { false, false, false, false };
 
         private string _Message;
-        //private string _PortName="COM4";
-        //private int _BaudRate = 9600;
-        //private int _DataBits = 8;
-        //private string _Parity = "None";
-        //private string _StopBits = "One";
-        private string _SlaveID="10";
-        private string _Address = "3999";
-        private string _Quentity = "4";
+      
         public string Message  
         {  
             get   
@@ -116,13 +99,22 @@ namespace ModBusGUI.Models
         //        MessageBox.Show(ex.Message);
         //    }
         //}
+
+        // Open Connection Functionality
         public void OpenConnectionRTU(string portName, int baudRate, Parity parity, int dataBits, StopBits stopBits)
         {
             try
             {
-                MessageBox.Show(portName);
+                //MessageBox.Show(portName);
+                serialPort.PortName = portName;
+                serialPort.BaudRate = baudRate;
+                serialPort.Parity = parity;
+                serialPort.DataBits = dataBits;
+                serialPort.StopBits = stopBits;
                 ModbusSerialMaster masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
                 serialPort.Open();
+                //ModBusMainWindow modBusMainWindow = new ModBusMainWindow();
+               //ProgressBarValue =100;
             }
             catch (Exception err)
             {
@@ -131,66 +123,91 @@ namespace ModBusGUI.Models
             
         }
 
-        // Read Coil and Input get and set values
-        public string SlaveID
+       
+        public void ReadInput(byte slaveAddress, ushort coilAddress, ushort numberOfPoints)
         {
-            get { return _SlaveID; }
-            set
+            masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
+            ReadInputData = masterRtu.ReadInputs(slaveAddress, coilAddress, numberOfPoints);    // read Input
+            foreach (var item in ReadInputData)
             {
-                SetProperty(ref _SlaveID, value);
+                //Console.WriteLine(item);
+                MessageBox.Show(item.ToString());
             }
         }
+        public void ReadCoil(byte slaveAddress, ushort coilAddress, ushort numberOfPoints)
+        {
+            masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
+            ReadCoilData = masterRtu.ReadCoils(slaveAddress, coilAddress, numberOfPoints);    // read Coil
+            foreach (var item in ReadCoilData)
+            {
+                //Console.WriteLine(item);
+                MessageBox.Show(item.ToString());
+            }
+        }
+        public void WriteSingleCoil(byte slaveAddress, ushort coilAddress, bool value)
+        {
+            if(serialPort.IsOpen)
+            {
+                
+                masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
+                masterRtu.WriteSingleCoil(slaveAddress, coilAddress, value);
+            }
+            else
+            {
+                MessageBox.Show("Connection is not Open ! Plaese Open Connection Then Perform Operation.");
+            }
+        }
+        //*************************************** Write Multi Coil Function ********************************************//
 
-        public string Address
+        //Get Multi Coil Status
+        //public bool[] MultiStatus(byte slaveAddress, ushort coilAddress, ushort numberOfPoints)
+        //{
+        //    try
+        //    {
+        //        masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
+        //        ReadCoilData = masterRtu.ReadCoils(slaveAddress, coilAddress, numberOfPoints);    // read Coil
+        //    }
+        //    catch (Exception err)
+        //    {
+        //        MessageBox.Show(err.Message);
+        //    }
+        //        return ReadCoilData;
+
+        //}
+
+        public void WriteMultiCoils(byte slaveAddress, ushort startAddress, bool[] data)
         {
-            get { return _Address; }
-            set
-            {
-                SetProperty(ref _Address, value);
-            }
-        }
-        public string Quentity
-        {
-            get { return _Quentity; }
-            set
-            {
-                SetProperty(ref _Quentity, value);
-            }
-        }
-        private string _Items="true";
-        public string Items
-        {
-            get { return _Items; }
-            set
-            {
-                SetProperty(ref _Items, value);
-            }
-        }
-        
-        public void ReadCoilAndInput()
-        {
-            //MessageBox.Show(_SlaveID);
-           
-            //MessageBox.Show(quentity.ToString());
             try
             {
-                ModbusSerialMaster masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
-                slaveID = Convert.ToByte(_SlaveID);
-                address = Convert.ToUInt16(_Address);
-                quentity = Convert.ToUInt16(_Quentity);
-                //masterRtu.WriteSingleCoil(10, 3999, false);
-                ReadCoilData = masterRtu.ReadCoils(Convert.ToByte(_SlaveID), Convert.ToUInt16(_Address), Convert.ToUInt16(_Quentity));    // read Coil
-                foreach (var item in ReadCoilData)
-                {
-                    //Console.WriteLine(item);
-                }
+                masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
+                masterRtu.WriteMultipleCoils(slaveAddress, startAddress, data);    // write multi Coil
             }
             catch (Exception err)
             {
                 MessageBox.Show(err.Message);
             }
-          
         }
 
-    }
+        //public void ReadCoilAndInput(byte slaveAddress, ushort coilAddress, ushort numberOfPoints)
+        //{
+
+            //    try
+            //    {
+            //        masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
+            //        masterRtu.WriteSingleCoil(10, 3999, true);
+            //        ReadCoilData = masterRtu.ReadCoils(slaveAddress,coilAddress,numberOfPoints);    // read Coil
+            //        foreach (var item in ReadCoilData)
+            //        {
+            //            //Console.WriteLine(item);
+            //            MessageBox.Show(item.ToString());
+            //        }
+            //    }
+            //    catch (Exception err)
+            //    {
+            //        MessageBox.Show(err.Message);
+            //    }
+
+            //}
+
+        }
 }
