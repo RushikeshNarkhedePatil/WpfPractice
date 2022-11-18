@@ -56,3 +56,7 @@ C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\WPFD
 C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\WPFDragAndDrop.baml
 C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\WPF2DGraphics1.g.cs
 C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\WPF2DGraphics1.baml
+C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\ListViewPractice.g.cs
+C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\ListViewPractice.baml
+C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\ComboBox.g.cs
+C:\Users\varad\source\repos\PracticeWPF\PracticeWPF\obj\Debug\netcoreapp3.1\ComboBox.baml

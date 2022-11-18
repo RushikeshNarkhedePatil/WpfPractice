@@ -1,14 +1,59 @@
 ﻿using Prism.Mvvm;
 using ModBusGUI.Models;
+using ModBusGUI.Views;
 using Prism.Commands;
 using System.Windows.Input;
 using System.Windows;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System;
+using System.Collections.ObjectModel;
 
 namespace ModBusGUI.ViewModels
 {
+    //********************************************************Set List View Collection **************************************************//
+    public class ReadItem
+    {
+        public ReadItem(string name)
+        {
+            Read = name;
+        }
+        public string Read { get; set; }
+    }
+    public class Item
+    {
+        public Item(string name)
+        {
+            Name = name;
+        }
+
+        public string Name { get; set; }
+      
+    }
+
+    public class ItemHandler
+    {
+        public ItemHandler()
+        {
+            Items = new ObservableCollection<Item>();
+            Read = new ObservableCollection<ReadItem>();
+        }
+
+        public ObservableCollection<Item> Items { get; private set; }
+        public ObservableCollection<Item> WriteMCoil { get; private set; }
+        public ObservableCollection<ReadItem> Read { get; private set; }
+        public ObservableCollection<Item> WriteSCoil { get; private set; }
+
+        public void Add(Item item)
+        {
+            Items.Add(item);
+        }
+        public void ReadAdd(ReadItem item)
+        {
+            Read.Add(item);
+        }
+    }
+    //*************************************End List View Classes*********************************************************//
     class MBViewModel:BindableBase
     {
         private SerialPort serialPort = new SerialPort(); //Create a new SerialPort object.
@@ -35,24 +80,70 @@ namespace ModBusGUI.ViewModels
             get { return _Title; }
             set { SetProperty(ref _Title, value); }
         }
+        // Create Observable Collection
+        private ObservableCollection<Person> person;
+        private readonly ItemHandler _itemHandler;
         public MBViewModel()
         {
 
             mbModel = new MBModel();
+            //**************************************Call Button after Click*************************************************//
             ClickCommandOpen = new DelegateCommand(OpenConnection);
             ClickCommandRead = new DelegateCommand(ReadCoilAndInput);
             CmdWriteSingleCoil = new DelegateCommand(WriteSingleCoil);
             CmdWriteMultiCoil = new DelegateCommand(WriteMultiCoil);
+            ClickCommandClose = new DelegateCommand(CloseConnection);
+            ClearReadList = new DelegateCommand(ClearCoilAndInput);
+            
+
+
+            //ModBusMainWindow mainview = new ModBusMainWindow();
+            // Observable Collection
+            //person = new ObservableCollection<Person>()
+            //{
+
+            //    new Person() { Name = "Prabhat", Address = "India" },
+
+            //    new Person() { Name = "Smith", Address = "US" }
+            //};
+            //lstRead.ItemsSource = person;
+
+            // List View Item
+            _itemHandler = new ItemHandler();
+            //_itemHandler.Add(new Item("John Doe"));
+            //_itemHandler.Add(new Item("Jane Doe"));
+            //_itemHandler.Add(new Item("Sammy Doe"));
         }
 
-        //Demo
-       
+        
+
+        //*****************************************get ListView Value********************************************//
+        public ObservableCollection<Item> Items
+        {
+            get { return _itemHandler.Items; }
+        }
+        public ObservableCollection<ReadItem> Read
+        {
+            get { return _itemHandler.Read; }
+        }
+
+        //****************************************Set Button Commands To Call Function******************************************//
         public ICommand ClickCommandRead
         {
             get;
             private set;
         }
+        public ICommand ClearReadList
+        {
+            get;
+            private set;
+        }
         public ICommand ClickCommandOpen
+        {
+            get;
+            private set;
+        }
+        public ICommand ClickCommandClose
         {
             get;
             private set;
@@ -67,7 +158,9 @@ namespace ModBusGUI.ViewModels
             get;
             private set;
         }
-        // call Function
+        //****************************************End Command Button Function Calling******************************************//
+
+        //********************************************Functions**************************************************************//
         private void OpenConnection()
         {
             if (_RTU == true)
@@ -77,9 +170,7 @@ namespace ModBusGUI.ViewModels
                 stopBits = serialPort.StopBits = (StopBits)Enum.Parse(typeof(StopBits), _StopBits);
 
                 mbModel.OpenConnectionRTU(_PortName, _BaudRate, parity, _DataBits, stopBits);           // Call Open Connection
-                _ProgressBarOpen = 100;
-                
-                MessageBox.Show(_ProgressBarOpen.ToString());
+                //ProgressBarOpen = 100;
 
             }
             if (_ASCII == true)
@@ -88,21 +179,48 @@ namespace ModBusGUI.ViewModels
             }
             
         }
-
+        public void CloseConnection()
+        {
+            mbModel.CloseConnection();
+            //ProgressBarOpen = 0;
+        }
         private void ReadCoilAndInput()
         {
-            if(_Coil)
+
+            //Dictionary<string, string> DicReadInputCoil =new Dictionary<string, string>();
+            if (_Coil)
             {
                 MessageBox.Show("Click On Coil");
                 mbModel.ReadCoil(_SlaveID, _Address, _Quentity);
+                short i = 0;
+                foreach (var item in mbModel.ReadCoilData)
+                {
+                    //DicReadInputCoil.Add("Coil "+i.ToString(),item.ToString());
+                    i++;
+                    _itemHandler.ReadAdd(new ReadItem("Coil"+i.ToString()+"  "+item.ToString()));
+                }
+                
+                ReadCoilProgressBar = 100;
             }
             else if(_Input)
             {
                 MessageBox.Show("Click On Input");
                 mbModel.ReadInput(_SlaveID, _Address, _Quentity);
+                int i = 0;
+                foreach (var item in mbModel.ReadInputData)
+                {
+                    //DicReadInputCoil.Add("Coil "+i.ToString(),item.ToString());
+                    i++;
+                    _itemHandler.ReadAdd(new ReadItem("Input" + i.ToString() + "  " + item.ToString()));
+                }
+                ReadCoilProgressBar = 100;
             }
         }
-
+        private void ClearCoilAndInput()
+        {
+            Read.Clear();
+            ReadCoilProgressBar = 0;
+        }
         private int CheckSingleCoilPosition()
         {
             if (SingleCoil1)
@@ -145,6 +263,7 @@ namespace ModBusGUI.ViewModels
                 if (RTU)
                 {
                    mbModel.WriteSingleCoil(_SlaveID,_Address,true);
+                    _itemHandler.Add(new Item("true"));
                 }
                 else if(ASCII)
                 {
@@ -157,6 +276,7 @@ namespace ModBusGUI.ViewModels
                 if (RTU)
                 {
                     mbModel.WriteSingleCoil(_SlaveID, _Address, false);
+                    _itemHandler.Add(new Item("false"));
                 }
                 else if (ASCII)
                 {
@@ -170,7 +290,7 @@ namespace ModBusGUI.ViewModels
 
         }
 
-        public void MultiCoilStatus()
+        public void MultiOnCoilStatus()         // multi On Status
         {
             if (_CheckCoil1 || _CheckCoil2 || _CheckCoil3 || _CheckCoil4)
             {
@@ -193,26 +313,51 @@ namespace ModBusGUI.ViewModels
                 }
             }
         }
+        public void MultiOffCoilStatus()         // multi On Status
+        {
+            if (_CheckCoil1 || _CheckCoil2 || _CheckCoil3 || _CheckCoil4)
+            {
+
+                if (_CheckCoil1)
+                {
+                    WriteMultiCoilData[0] = false;
+                }
+                if (_CheckCoil2)
+                {
+                    WriteMultiCoilData[1] = false;
+                }
+                if (_CheckCoil3)
+                {
+                    WriteMultiCoilData[2] = false;
+                }
+                if (_CheckCoil4)
+                {
+                    WriteMultiCoilData[3] = false;
+                }
+            }
+        }
 
         public void WriteMultiCoil()
         {
             if(RTU)
             {
-                MultiCoilStatus();
-                //WriteMultiCoilData = mbModel.MultiStatus(_SlaveID,3999,_Quentity);
-                mbModel.WriteMultiCoils(_SlaveID,_Address,WriteMultiCoilData);      // call write multi coil method
+                WriteMultiCoilData = mbModel.MultiStatus(_SlaveID, 3999, _Quentity); // check status
+               
             }
             if(radioOnMulti)
             {
-                MessageBox.Show("Radio Multi ON");
+                MultiOnCoilStatus();
+                mbModel.WriteMultiCoils(_SlaveID, _Address, WriteMultiCoilData);      // call write multi coil method
             }
             else if(radioOffMulti)
             {
-                MessageBox.Show("Radio Multi OFF");
+                MultiOffCoilStatus();
+                mbModel.WriteMultiCoils(_SlaveID, _Address, WriteMultiCoilData);      // call write multi coil method
 
             }
 
         }
+        //*******************************************End Functions*********************************************//
 
         // check radio button active or not set values
         //Open Connection Mode
@@ -417,15 +562,7 @@ namespace ModBusGUI.ViewModels
                 SetProperty(ref _Parity, value);
             }
         }
-        private double _ProgressBarOpen=0;
-        public double ProgressBar
-        {
-            get { return _ProgressBarOpen; }
-            set
-            {
-                SetProperty(ref _ProgressBarOpen, value);
-            }
-        }
+       
         // Set Read Coils and Input Values
         public byte SlaveID
         {
@@ -452,16 +589,34 @@ namespace ModBusGUI.ViewModels
                 SetProperty(ref _Quentity, value);
             }
         }
-        private string _Items = "true";
-        
 
-        public string Items
+        //**********************************************Set Progress Bar Values*************************************************//
+        private double _ProgressBarOpen;
+        public double ProgressBarOpen
         {
-            get { return _Items; }
+            get { return _ProgressBarOpen; }
             set
             {
-                SetProperty(ref _Items, value);
+                SetProperty(ref _ProgressBarOpen, value);
             }
         }
+
+        private double _ReadCoilProgressBar = 0;
+        public double ReadCoilProgressBar
+        {
+            get { return _ReadCoilProgressBar; }
+            private set
+            {
+                SetProperty(ref _ReadCoilProgressBar, value);
+            }
+        }
+
     }
+    // Try Collection Practice
+    class Person
+    {
+        public string Name { get; set; }
+        public string Address { get; set; }
+    }
+
 }
