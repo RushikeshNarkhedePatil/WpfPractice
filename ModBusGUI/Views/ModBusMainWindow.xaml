@@ -5,10 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:prism="http://prismlibrary.com/"
         xmlns:local="clr-namespace:ModBusGUI.Views"
-        xmlns:Models="clr-namespace:ModBusGUI.Models" xmlns:viewmodels="clr-namespace:ModBusGUI.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:MBViewModel}" x:Class="ModBusGUI.Views.ModBusMainWindow"
+        xmlns:Models="clr-namespace:ModBusGUI.Models" 
+        xmlns:viewmodels="clr-namespace:ModBusGUI.ViewModels" 
+        d:DataContext="{d:DesignInstance Type=viewmodels:MBViewModel}" 
+        x:Class="ModBusGUI.Views.ModBusMainWindow"
         prism:ViewModelLocator.AutoWireViewModel="True"
         mc:Ignorable="d"
-        Title="{Binding Header, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="614" Width="800">
+        Title="{Binding Header, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="614" Width="800" Background="Beige">
     <Grid Margin="0,0,0,18">
         <!--Grid for four Main Group Box-->
         <Grid.RowDefinitions>
@@ -51,15 +54,16 @@
                         <TextBox x:Name="txtBaudRate" Grid.Row="1" Grid.Column="1" Text="{Binding BaudRate, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
                         <TextBox x:Name="txtData" Grid.Row="2" Grid.Column="1" Text="{Binding DataBits, Mode=TwoWay,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
                         <ComboBox x:Name="CombParityBit" Grid.Row="2" Grid.Column="1" Margin="0,22,10,5" Grid.RowSpan="2" 
-                                  ItemsSource="{Binding myCollection}">
-                            <ComboBoxItem Content="None"/>
-                            <ComboBoxItem Content="Even"/>
-                            <ComboBoxItem Content="Odd"/>
+                                   ItemsSource="{Binding Path=PBits}" SelectedValue="{Binding Parity}"    
+                                   SelectedItem="{Binding Path=SPBits}"  
+                                   DisplayMemberPath="Name">
+
                         </ComboBox>
-                        <ComboBox x:Name="CombStopBit" Grid.Row="3" Grid.Column="1" Margin="0,23,10,5" Grid.RowSpan="2"
-                                  SelectedIndex="0">
-                            <ComboBoxItem Content="One"/>
-                            <ComboBoxItem Content="Two"/>
+                        <ComboBox x:Name="CombStopBit" Grid.Row="3" 
+                                   ItemsSource="{Binding Path=CombStopBits}"    
+                                   SelectedItem="{Binding Path=SCombStopBits}"  
+                                   DisplayMemberPath="Name"
+                                  Grid.Column="1" Margin="0,23,10,5" Grid.RowSpan="2">
                         </ComboBox>
                         <Button x:Name="btnOpen" Content="Open"  Command="{Binding ClickCommandOpen}"  
                                 Grid.Row="4" Grid.Column="0" Margin="10,0,18,5.5" FontWeight="Bold" 
@@ -115,9 +119,11 @@
                         <TextBox Grid.Column="1" HorizontalAlignment="Center" Grid.Row="2" 
                                  Text="{Binding Quentity,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
                                  TextWrapping="Wrap" VerticalAlignment="Top" Width="77" Height="20" Margin="3"/>
-                        <TextBox Grid.Column="1" HorizontalAlignment="Center"
-                                 Text="{Binding Address,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
-                                 Height="20" Margin="11,1,11,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76" Grid.Row="1"/>
+                        <ComboBox Grid.Column="1" HorizontalAlignment="Center" Margin="2" Grid.Row="1" 
+                                  ItemsSource="{Binding Path=combReadAddresses}"    
+                                   SelectedItem="{Binding Path=ScombReadAddresses}"  
+                                   DisplayMemberPath="Name"
+                                  VerticalAlignment="Top" Width="77" Height="22"/>
                     </Grid>
                     <!--Grid for Values-->
                     <GroupBox Header="Value" Height="40" Width="174" Margin="0,0,0,5">
@@ -151,10 +157,9 @@
                                  Value="{Binding ReadCoilProgressBar,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                                  Height="15" Width="175" Margin="11,2"/>
                 </StackPanel>
-                <ListView Grid.Column="1" x:Name="lstRead" 
-                          HorizontalAlignment="Left" Height="177" 
-                          Margin="11,5,0,0" 
-                          VerticalAlignment="Top" Width="177" ItemsSource="{Binding Read, Mode=OneWay}">
+                <ListView Grid.Column="1" x:Name="lstRead"
+                          Margin="23,5,10,9" 
+                          ItemsSource="{Binding Read, Mode=OneWay}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
@@ -280,7 +285,11 @@
                         <TextBox x:Name="txtWriteMultiAddress" Grid.Row="1" Grid.ColumnSpan="2" 
                                  Text="{Binding Address,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
                                  Margin="99,0,10,5"/>
-                        <ComboBox Grid.Row="2" x:Name="CombWriteMultiCoil" Margin="5,0,10,21" Grid.Column="1"/>
+                        <ComboBox Grid.Row="2" x:Name="CombWriteMultiCoil" 
+                                   ItemsSource="{Binding Path=Persons}"    
+                                   SelectedItem="{Binding Path=SPerson}"  
+                                   DisplayMemberPath="Name"
+                                  Margin="5,0,10,21" Grid.Column="1"/>
                     </Grid>
                     <GroupBox Header="Value" Height="40" Width="157">
                         <Grid Margin="0,0,46,0">
@@ -323,7 +332,17 @@
                         <Button Content="Clear" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="54"/>
                     </Grid>
                 </StackPanel>
-                <ListView Grid.Column="1" Margin="10,10,10,10"/>
+                <ListView Grid.Column="1" Margin="10,10,10,10" ItemsSource="{Binding WriteMCoil,Mode=OneWay}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding WriteMCoil}" 
+                                           FontSize="14" 
+                                           Margin="33,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </Grid>
         </GroupBox>
         <GroupBox Header="Auto Update Coil and Input Status" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,20,-9" FontWeight="Bold">

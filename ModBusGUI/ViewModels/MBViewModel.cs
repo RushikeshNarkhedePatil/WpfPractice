@@ -12,6 +12,14 @@ using System.Collections.ObjectModel;
 namespace ModBusGUI.ViewModels
 {
     //********************************************************Set List View Collection **************************************************//
+    public class WriteItem
+    {
+        public WriteItem(string name)
+        {
+            WriteMCoil = name;
+        }
+        public string WriteMCoil { get; set; }
+    }
     public class ReadItem
     {
         public ReadItem(string name)
@@ -37,10 +45,11 @@ namespace ModBusGUI.ViewModels
         {
             Items = new ObservableCollection<Item>();
             Read = new ObservableCollection<ReadItem>();
+            WriteMCoil = new ObservableCollection<WriteItem>();
         }
 
         public ObservableCollection<Item> Items { get; private set; }
-        public ObservableCollection<Item> WriteMCoil { get; private set; }
+        public ObservableCollection<WriteItem> WriteMCoil { get; private set; }
         public ObservableCollection<ReadItem> Read { get; private set; }
         public ObservableCollection<Item> WriteSCoil { get; private set; }
 
@@ -51,6 +60,10 @@ namespace ModBusGUI.ViewModels
         public void ReadAdd(ReadItem item)
         {
             Read.Add(item);
+        }
+        public void WriteMAdd(WriteItem item)
+        {
+            WriteMCoil.Add(item);
         }
     }
     //*************************************End List View Classes*********************************************************//
@@ -72,6 +85,7 @@ namespace ModBusGUI.ViewModels
         private ushort _Quentity = 4;
         private int SingleCoilPosition;
         private bool WriteCoil = false;
+        private bool PortStatus = false;
         public bool[] ReadCoilData = { false, false, false, false };
         private bool[] WriteMultiCoilData = { false, false, false, false };
 
@@ -111,9 +125,30 @@ namespace ModBusGUI.ViewModels
             // List View Item
             _itemHandler = new ItemHandler();
             //_itemHandler.Add(new Item("John Doe"));
-            //_itemHandler.Add(new Item("Jane Doe"));
-            //_itemHandler.Add(new Item("Sammy Doe"));
-        }
+
+            //******************************************* Demo Combo Box Values**********************************//
+            Persons = new ObservableCollection<Person>()
+            {
+              new Person(){Name="true"}
+              ,new Person(){Name="false"}
+            };
+            PBits = new ObservableCollection<CombParityBit>()
+            {
+                new CombParityBit() { Name="None"},
+                new CombParityBit() { Name="Even"},
+                new CombParityBit() { Name="Odd"}
+            };
+            CombStopBits = new ObservableCollection<CombStopBit>()
+            {
+                new CombStopBit(){Name="One"},
+                new CombStopBit(){Name="Two"}
+            };
+            combReadAddresses = new ObservableCollection<CombReadAddress>()
+            {
+                new CombReadAddress(){Name=3999},
+                new CombReadAddress(){Name=7999}
+            };
+        }// MBViewModel Constructer End
 
         
 
@@ -126,7 +161,87 @@ namespace ModBusGUI.ViewModels
         {
             get { return _itemHandler.Read; }
         }
+        public ObservableCollection<WriteItem> WriteMCoil
+        {
+            get { return _itemHandler.WriteMCoil; }
+        }
+        //********************************************Demo Combo Box**********************************************//
+        private ObservableCollection<Person> _persons;
+        private ObservableCollection<CombParityBit> _PBits; 
+        private ObservableCollection<CombStopBit> _CombStopBits;
+        private ObservableCollection<CombReadAddress> _combReadAddresses;
+        public ObservableCollection<Person> Persons
+        {
+            get { return _persons; }
+            set 
+            {
+                SetProperty(ref _persons, value);
+            }
+        }
+        private Person _sperson;
 
+        public Person SPerson
+        {
+            get { return _sperson; }
+            set 
+            {
+                SetProperty(ref _sperson, value);
+            }
+        }
+        //**********************************Set ParityBit Class**********************************//
+        public ObservableCollection<CombParityBit> PBits
+        {
+            get { return _PBits; }
+            set
+            {
+                SetProperty(ref _PBits, value);
+            }
+        }
+        private CombParityBit _SPBits;
+        public CombParityBit SPBits
+        {
+            get { return _SPBits; }
+            set
+            {
+                SetProperty(ref _SPBits,value);
+            }
+        }
+        //***********************************Combo Stop Bits********************************//
+        public ObservableCollection<CombStopBit> CombStopBits
+        {
+            get { return _CombStopBits; }
+            set
+            {
+                SetProperty(ref _CombStopBits, value);
+            }
+        }
+        private CombStopBit _SCombStopBits;
+        public CombStopBit SCombStopBits
+        {
+            get { return _SCombStopBits; }
+            set
+            {
+                SetProperty(ref _SCombStopBits, value);
+            }
+        }
+        //**********************************Comb Read Address****************************************//
+        public ObservableCollection<CombReadAddress> combReadAddresses
+        {
+            get { return _combReadAddresses; }
+            set
+            {
+                SetProperty(ref _combReadAddresses, value);
+            }
+        }
+        private CombReadAddress _ScombReadAddresses;
+        public CombReadAddress ScombReadAddresses
+        {
+            get { return _ScombReadAddresses; }
+            set
+            {
+                SetProperty(ref _ScombReadAddresses, value);
+            }
+        }
         //****************************************Set Button Commands To Call Function******************************************//
         public ICommand ClickCommandRead
         {
@@ -163,21 +278,25 @@ namespace ModBusGUI.ViewModels
         //********************************************Functions**************************************************************//
         private void OpenConnection()
         {
-            if (_RTU == true)
+            if (SPBits== null || SCombStopBits == null||RTU==false||PortName==null||BaudRate==0||DataBits==0)
             {
-                MessageBox.Show(_PortName);
-                parity = serialPort.Parity = (Parity)Enum.Parse(typeof(Parity), _Parity);               // typecast value
-                stopBits = serialPort.StopBits = (StopBits)Enum.Parse(typeof(StopBits), _StopBits);
-
-                mbModel.OpenConnectionRTU(_PortName, _BaudRate, parity, _DataBits, stopBits);           // Call Open Connection
-                //ProgressBarOpen = 100;
-
+                MessageBox.Show("Please fill all values","Message");
             }
-            if (_ASCII == true)
+            else
             {
-                MessageBox.Show("Implementation Remaining");
-            }
-            
+                if (_RTU == true)
+                {
+                    //MessageBox.Show(_PortName);
+                    parity = serialPort.Parity = (Parity)Enum.Parse(typeof(Parity), _SPBits.Name);               // typecast value
+                    stopBits = serialPort.StopBits = (StopBits)Enum.Parse(typeof(StopBits), _SCombStopBits.Name);
+
+                    mbModel.OpenConnectionRTU(_PortName, _BaudRate, parity, _DataBits, stopBits);           // Call Open Connection
+                }
+                if (_ASCII == true)
+                {
+                    MessageBox.Show("Implementation Remaining");
+                }
+            } 
         }
         public void CloseConnection()
         {
@@ -190,20 +309,34 @@ namespace ModBusGUI.ViewModels
             //Dictionary<string, string> DicReadInputCoil =new Dictionary<string, string>();
             if (_Coil)
             {
-                MessageBox.Show("Click On Coil");
-                mbModel.ReadCoil(_SlaveID, _Address, _Quentity);
-                short i = 0;
-                foreach (var item in mbModel.ReadCoilData)
+                PortStatus=mbModel.CheckPortOnOff();    // check on off serial port connection
+                if (PortStatus)
                 {
-                    //DicReadInputCoil.Add("Coil "+i.ToString(),item.ToString());
-                    i++;
-                    _itemHandler.ReadAdd(new ReadItem("Coil"+i.ToString()+"  "+item.ToString()));
+                    _Address = ScombReadAddresses.Name;
+                    mbModel.ReadCoil(_SlaveID, _Address, _Quentity);
+                    short i = 0;
+                    if (Read.Count != 0)   // if list is not empty then first clear list then add new item
+                    {
+                        Read.Clear();   // clear list
+                    }
+
+                    foreach (var item in mbModel.ReadCoilData)
+                    {
+                        //DicReadInputCoil.Add("Coil "+i.ToString(),item.ToString());
+                        i++;
+                        _itemHandler.ReadAdd(new ReadItem("Coil" + i.ToString() + "  " + item.ToString()));
+                    }
+                    ReadCoilProgressBar = 100;
                 }
-                
-                ReadCoilProgressBar = 100;
+                else
+                {
+                    MessageBox.Show("Connection is Close Please Check Connection and Try again","Message");
+                }
+ 
             }
             else if(_Input)
             {
+                _Address = ScombReadAddresses.Name;
                 MessageBox.Show("Click On Input");
                 mbModel.ReadInput(_SlaveID, _Address, _Quentity);
                 int i = 0;
@@ -263,6 +396,7 @@ namespace ModBusGUI.ViewModels
                 if (RTU)
                 {
                    mbModel.WriteSingleCoil(_SlaveID,_Address,true);
+                    mbModel.ReadCoil(_SlaveID, _Address, _Quentity);  //update Coil Data
                     _itemHandler.Add(new Item("true"));
                 }
                 else if(ASCII)
@@ -339,20 +473,30 @@ namespace ModBusGUI.ViewModels
 
         public void WriteMultiCoil()
         {
-            if(RTU)
+            //_itemHandler.WriteMAdd(new WriteItem(SPerson.Name));
+            if (RTU)
             {
-                WriteMultiCoilData = mbModel.MultiStatus(_SlaveID, 3999, _Quentity); // check status
+                WriteMultiCoilData = mbModel.MultiStatus(_SlaveID, _Address, _Quentity); // check status
                
             }
             if(radioOnMulti)
             {
                 MultiOnCoilStatus();
                 mbModel.WriteMultiCoils(_SlaveID, _Address, WriteMultiCoilData);      // call write multi coil method
+                foreach (var item in WriteMultiCoilData)
+                {
+                    _itemHandler.WriteMAdd(new WriteItem(item.ToString()));
+                }
             }
             else if(radioOffMulti)
             {
                 MultiOffCoilStatus();
                 mbModel.WriteMultiCoils(_SlaveID, _Address, WriteMultiCoilData);      // call write multi coil method
+                foreach (var item in WriteMultiCoilData)
+                {
+                    _itemHandler.WriteMAdd(new WriteItem(item.ToString()));
+                }
+                
 
             }
 
@@ -612,11 +756,46 @@ namespace ModBusGUI.ViewModels
         }
 
     }
-    // Try Collection Practice
+    // Combox Practice Classes
     class Person
     {
-        public string Name { get; set; }
-        public string Address { get; set; }
+        private string _name;
+
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+    }
+    class CombParityBit
+    {
+        private string _name;
+
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+    }
+    class CombStopBit
+    {
+        private string _name;
+
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
     }
 
+    class CombReadAddress
+    {
+        private ushort _name;
+
+        public ushort Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+    }
 }

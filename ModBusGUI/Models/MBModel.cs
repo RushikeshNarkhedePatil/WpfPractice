@@ -231,6 +231,17 @@ namespace ModBusGUI.Models
                 MessageBox.Show(err.Message);
             }
         }
+        public bool CheckPortOnOff()
+        {
+            if(serialPort.IsOpen)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         //public void ReadCoilAndInput(byte slaveAddress, ushort coilAddress, ushort numberOfPoints)
         //{

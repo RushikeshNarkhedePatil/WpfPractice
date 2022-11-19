@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,10 +21,38 @@ namespace PracticeWPF
         public ComboBox()
         {
             InitializeComponent();
-            combo.Items.Add("None");
-            combo.Items.Add("Even");
-            combo.Items.Add("Odd");
+            person = new ObservableCollection<ComboItems>()
+            {
 
+                new ComboItems() { Name = "Prabhat", Address = "India" },
+
+                new ComboItems() { Name = "Smith", Address = "US" }
+
+            };
+            ComboBox1.ItemsSource = LoadComboBoxData();
+            //ComboBox1.ItemsSource = person;
         }
+        private string[] LoadComboBoxData()
+        {
+            string[] strArray = {
+            "Coffie",
+            "Tea",
+            "Orange Juice",
+            "Milk",
+            "Mango Shake",
+            "Iced Tea",
+            "Soda",
+            "Water"
+        };
+            return strArray;
+        }
+       
+        private ObservableCollection<ComboItems> person;
+    }
+   
+    public class ComboItems
+    {
+        public string Name { get; set; }
+        public string Address { get; set; }
     }
 }

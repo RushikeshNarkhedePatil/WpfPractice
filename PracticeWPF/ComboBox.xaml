@@ -14,8 +14,8 @@
         <ListView Grid.Column="1" Margin="127,39,89,169">
            
         </ListView>
-        <ComboBox HorizontalAlignment="Left" Margin="120,32,0,0" 
-                  VerticalAlignment="Top" Width="175" Height="34" x:Name="combo"
+        <ComboBox HorizontalAlignment="Left" Margin="120,32,0,0" Name="ComboBox1" ItemsSource="{Binding LoadComboBoxData}" 
+                  VerticalAlignment="Top" Width="175" Height="34" 
                   >
 
         </ComboBox>

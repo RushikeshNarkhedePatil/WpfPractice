@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModBusWPF", "ModBusWPF\ModB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrismMVVMTestProject", "PrismMVVMTestProject\PrismMVVMTestProject.csproj", "{7EABA235-652D-4910-8F74-ECA866B0455A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComboBinding", "ComboBinding\ComboBinding.csproj", "{C3007975-0C25-476E-A435-A8963EEF8209}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{7EABA235-652D-4910-8F74-ECA866B0455A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7EABA235-652D-4910-8F74-ECA866B0455A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7EABA235-652D-4910-8F74-ECA866B0455A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3007975-0C25-476E-A435-A8963EEF8209}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3007975-0C25-476E-A435-A8963EEF8209}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3007975-0C25-476E-A435-A8963EEF8209}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3007975-0C25-476E-A435-A8963EEF8209}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
