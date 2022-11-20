@@ -28,6 +28,24 @@ namespace ModBusGUI.ViewModels
         }
         public string Read { get; set; }
     }
+    public class AutoCoilItem
+    {
+        public AutoCoilItem(string name)
+        {
+            ACName = name;
+        }
+        public string ACName { get; set; }
+    }
+
+    public class AutoInputItem
+    {
+        public AutoInputItem(string name)
+        {
+            AIName = name;
+        }
+        public string AIName { get; set; }
+    }
+
     public class Item
     {
         public Item(string name)
@@ -46,12 +64,15 @@ namespace ModBusGUI.ViewModels
             Items = new ObservableCollection<Item>();
             Read = new ObservableCollection<ReadItem>();
             WriteMCoil = new ObservableCollection<WriteItem>();
+            AutoCoil = new ObservableCollection<AutoCoilItem>();
+            AutoInput = new ObservableCollection<AutoInputItem>();
         }
 
         public ObservableCollection<Item> Items { get; private set; }
         public ObservableCollection<WriteItem> WriteMCoil { get; private set; }
         public ObservableCollection<ReadItem> Read { get; private set; }
-        public ObservableCollection<Item> WriteSCoil { get; private set; }
+        public ObservableCollection<AutoCoilItem> AutoCoil { get; private set; }
+        public ObservableCollection<AutoInputItem> AutoInput { get; private set; }
 
         public void Add(Item item)
         {
@@ -64,6 +85,14 @@ namespace ModBusGUI.ViewModels
         public void WriteMAdd(WriteItem item)
         {
             WriteMCoil.Add(item);
+        }
+        public void AutoCoilAdd(AutoCoilItem item)
+        {
+            AutoCoil.Add(item);
+        }
+        public void AutoInputAdd(AutoInputItem item)
+        {
+            AutoInput.Add(item);
         }
     }
     //*************************************End List View Classes*********************************************************//
@@ -96,11 +125,12 @@ namespace ModBusGUI.ViewModels
         }
         // Create Observable Collection
         private ObservableCollection<Person> person;
-        private readonly ItemHandler _itemHandler;
+        public readonly ItemHandler _itemHandler;
         public MBViewModel()
         {
 
             mbModel = new MBModel();
+            
             //**************************************Call Button after Click*************************************************//
             ClickCommandOpen = new DelegateCommand(OpenConnection);
             ClickCommandRead = new DelegateCommand(ReadCoilAndInput);
@@ -108,8 +138,8 @@ namespace ModBusGUI.ViewModels
             CmdWriteMultiCoil = new DelegateCommand(WriteMultiCoil);
             ClickCommandClose = new DelegateCommand(CloseConnection);
             ClearReadList = new DelegateCommand(ClearCoilAndInput);
-            
-
+            ClearSCList = new DelegateCommand(ClearSCoilList);
+            ClearMCList = new DelegateCommand(ClearMCoilList);
 
             //ModBusMainWindow mainview = new ModBusMainWindow();
             // Observable Collection
@@ -125,8 +155,10 @@ namespace ModBusGUI.ViewModels
             // List View Item
             _itemHandler = new ItemHandler();
             //_itemHandler.Add(new Item("John Doe"));
+            //_itemHandler.AutoCoilAdd(new AutoCoilItem("John Doe"));
 
-            //******************************************* Demo Combo Box Values**********************************//
+
+            //******************************************* Combo Box Values**********************************//
             Persons = new ObservableCollection<Person>()
             {
               new Person(){Name="true"}
@@ -150,7 +182,9 @@ namespace ModBusGUI.ViewModels
             };
         }// MBViewModel Constructer End
 
-        
+       
+
+
 
         //*****************************************get ListView Value********************************************//
         public ObservableCollection<Item> Items
@@ -164,6 +198,14 @@ namespace ModBusGUI.ViewModels
         public ObservableCollection<WriteItem> WriteMCoil
         {
             get { return _itemHandler.WriteMCoil; }
+        }
+        public ObservableCollection<AutoCoilItem> AutoCoil
+        {
+            get { return _itemHandler.AutoCoil; }
+        }
+        public ObservableCollection<AutoInputItem> AutoInput
+        {
+            get { return _itemHandler.AutoInput; }
         }
         //********************************************Demo Combo Box**********************************************//
         private ObservableCollection<Person> _persons;
@@ -253,6 +295,16 @@ namespace ModBusGUI.ViewModels
             get;
             private set;
         }
+        public ICommand ClearSCList
+        {
+            get;
+            private set;
+        }
+        public ICommand ClearMCList
+        {
+            get;
+            private set;
+        }
         public ICommand ClickCommandOpen
         {
             get;
@@ -273,7 +325,14 @@ namespace ModBusGUI.ViewModels
             get;
             private set;
         }
-        //****************************************End Command Button Function Calling******************************************//
+        //****************************************Display Auto Coil Result on screen*****************************************//
+        public void DisplayCoil()
+        {
+            foreach (var item in mbModel.ReadCoilData)
+            {
+                MessageBox.Show(item.ToString());
+            }
+        }
 
         //********************************************Functions**************************************************************//
         private void OpenConnection()
@@ -291,6 +350,7 @@ namespace ModBusGUI.ViewModels
                     stopBits = serialPort.StopBits = (StopBits)Enum.Parse(typeof(StopBits), _SCombStopBits.Name);
 
                     mbModel.OpenConnectionRTU(_PortName, _BaudRate, parity, _DataBits, stopBits);           // Call Open Connection
+                    mbModel.AutoCoilStatus();
                 }
                 if (_ASCII == true)
                 {
@@ -301,13 +361,14 @@ namespace ModBusGUI.ViewModels
         public void CloseConnection()
         {
             mbModel.CloseConnection();
+           // _itemHandler.AutoCoilAdd(new AutoCoilItem("Hello"));
             //ProgressBarOpen = 0;
         }
         private void ReadCoilAndInput()
         {
 
             //Dictionary<string, string> DicReadInputCoil =new Dictionary<string, string>();
-            if (_Coil)
+            if (_Coil&&ScombReadAddresses!=null&&_SlaveID!=0&&_Quentity!=0)
             {
                 PortStatus=mbModel.CheckPortOnOff();    // check on off serial port connection
                 if (PortStatus)
@@ -334,7 +395,8 @@ namespace ModBusGUI.ViewModels
                 }
  
             }
-            else if(_Input)
+           
+            else if(_Input && ScombReadAddresses != null && _SlaveID != 0 && _Quentity != 0)
             {
                 _Address = ScombReadAddresses.Name;
                 MessageBox.Show("Click On Input");
@@ -348,11 +410,24 @@ namespace ModBusGUI.ViewModels
                 }
                 ReadCoilProgressBar = 100;
             }
+            else
+            {
+                MessageBox.Show("Please Fill all Values", "Message");
+            }
         }
         private void ClearCoilAndInput()
         {
             Read.Clear();
             ReadCoilProgressBar = 0;
+        }
+        private void ClearMCoilList()
+        {
+            WriteMCoil.Clear();
+        }
+
+        private void ClearSCoilList()
+        {
+            Items.Clear();
         }
         private int CheckSingleCoilPosition()
         {
@@ -396,7 +471,7 @@ namespace ModBusGUI.ViewModels
                 if (RTU)
                 {
                    mbModel.WriteSingleCoil(_SlaveID,_Address,true);
-                    mbModel.ReadCoil(_SlaveID, _Address, _Quentity);  //update Coil Data
+                    //mbModel.ReadCoil(_SlaveID, 3999, _Quentity);  //update Coil Data
                     _itemHandler.Add(new Item("true"));
                 }
                 else if(ASCII)

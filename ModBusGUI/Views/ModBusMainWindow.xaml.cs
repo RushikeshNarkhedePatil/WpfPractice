@@ -51,6 +51,11 @@ namespace ModBusGUI.Views
         {
             //person.Add(new Person() { Name = "hello", Address = "word" });
         }
+
+        private void Window_SelectedDatesChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+
+        }
         //private void OpenConnection_Button(object sender, RoutedEventArgs e)
         //{
 

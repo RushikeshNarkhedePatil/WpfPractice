@@ -46,7 +46,7 @@ namespace ModBusGUI {
     /// <summary>
     /// App
     /// </summary>
-    public partial class App : Prism.Unity.PrismApplication {
+    public partial class App : Prism.DryIoc.PrismApplication {
         
         /// <summary>
         /// Application Entry Point.

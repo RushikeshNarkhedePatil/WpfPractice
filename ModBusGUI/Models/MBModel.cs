@@ -4,20 +4,24 @@ using System.IO.Ports;
 using Modbus.Device;
 using System.Windows;
 using System;
-using ModBusGUI.Views;
+using ModBusGUI.ViewModels;
 using System.Collections;
+using System.Threading;
+using System.Windows.Threading;
 
 namespace ModBusGUI.Models
 {
     public class MBModel:BindableBase
     {
+        private MBViewModel viewModel;
+        private readonly ItemHandler _itemHandler;
         private SerialPort serialPort = new SerialPort(); //Create a new SerialPort object.
         private Modbus.Device.IModbusSerialMaster masterRtu, masterAscii;
         public bool[] ReadCoilData = { false, false, false, false };
         public bool[] ReadInputData = { false, false, false, false };
         public MBModel()
         {
-
+            _itemHandler = new ItemHandler();
         }
         // Demo
 
@@ -34,73 +38,7 @@ namespace ModBusGUI.Models
                 SetProperty(ref _Message, value);  
             }  
         }
-        //public string PortName
-        //{
-        //    get { return _PortName; }
-        //    set
-        //    {
-        //        SetProperty(ref _PortName, value);
-        //    }
-        //}
-        //public int BaudRate
-        //{
-        //    get { return _BaudRate; }
-        //    set
-        //    {
-        //        SetProperty(ref _BaudRate, value);
-        //    }
-        //}
-
-        //public int DataBits
-        //{
-        //    get { return _DataBits; }
-        //    set
-        //    {
-        //        SetProperty(ref _DataBits, value);
-        //    }
-        //}
-        //public string StopBits
-        //{
-        //    get { return _StopBits; }
-        //    set
-        //    {
-        //        SetProperty(ref _StopBits, value);
-        //    }
-        //}
-
-        //public string Parity
-        //{
-        //    get { return _Parity; }
-        //    set
-        //    {
-        //        SetProperty(ref _Parity, value);
-        //    }
-        //}
-        //public void OpenConnection()
-        //{
-        //    try
-        //    {
-        //        //ModBusMainWindow modBusMain = new ModBusMainWindow();
-        //        //string parity = modBusMain.CombParityBit.SelectedItem.ToString();
-        //        serialPort.PortName = _PortName;
-        //        //MessageBox.Show(_Parity);
-        //        serialPort.BaudRate = _BaudRate;
-        //        serialPort.DataBits = _DataBits;
-        //        serialPort.Parity = (Parity)Enum.Parse(typeof(Parity), _Parity);
-        //        serialPort.StopBits = (StopBits)Enum.Parse(typeof(StopBits), _StopBits);
-        //        serialPort.Open();
-               
-        //        if (serialPort.IsOpen)
-        //        {
-        //            MessageBox.Show("Connection Open Successfully");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //    }
-        //}
-
+      
         // Open Connection Functionality
         public void OpenConnectionRTU(string portName, int baudRate, Parity parity, int dataBits, StopBits stopBits)
         {
@@ -144,18 +82,18 @@ namespace ModBusGUI.Models
             {
                 masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
                 ReadInputData = masterRtu.ReadInputs(slaveAddress, coilAddress, numberOfPoints);    // read Input
-                foreach (var item in ReadInputData)
-                {
-                    //Console.WriteLine(item);
-                    arlist.Add(item);
-                    //MessageBox.Show(item.ToString());
-                }
-                ReadCoilProgressBar = 100;
-                MessageBox.Show("Input 1 " + arlist[0] + "\n"
-              + "Input 2 " + arlist[1] + "\n"
-              + "Input 3 " + arlist[2] + "\n"
-              + "Input 4 " + arlist[3] + "\n", "Input ON OFF Status");
-                ReadCoilProgressBar = 0;
+              //  foreach (var item in ReadInputData)
+              //  {
+              //      //Console.WriteLine(item);
+              //      arlist.Add(item);
+              //      //MessageBox.Show(item.ToString());
+              //  }
+              //  ReadCoilProgressBar = 100;
+              //  MessageBox.Show("Input 1 " + arlist[0] + "\n"
+              //+ "Input 2 " + arlist[1] + "\n"
+              //+ "Input 3 " + arlist[2] + "\n"
+              //+ "Input 4 " + arlist[3] + "\n", "Input ON OFF Status");
+              //  ReadCoilProgressBar = 0;
             }
             catch (Exception err)
             {
@@ -192,9 +130,15 @@ namespace ModBusGUI.Models
         {
             if(serialPort.IsOpen)
             {
-                
-                masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
-                masterRtu.WriteSingleCoil(slaveAddress, coilAddress, value);
+                try
+                {
+                    masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
+                    masterRtu.WriteSingleCoil(slaveAddress, coilAddress, value);
+                }
+                catch (Exception err)
+                {
+                    MessageBox.Show(err.Message, "Message",MessageBoxButton.OK,MessageBoxImage.Error);
+                }
             }
             else
             {
@@ -242,27 +186,79 @@ namespace ModBusGUI.Models
                 return false;
             }
         }
+        //****************************************Auto Display Coil Status**************************************//
 
-        //public void ReadCoilAndInput(byte slaveAddress, ushort coilAddress, ushort numberOfPoints)
+        public void AutoCoilStatus()
+        {
+            if (serialPort.IsOpen)
+            {
+                timeCB = new TimerCallback(PrintCoil);
+                System.Threading.Timer t = new System.Threading.Timer(
+                timeCB,   // The TimerCallback delegate type. 
+                "Hi",     // Any info to pass into the called method.
+                0,        // Amount of time to wait before starting.
+                3000);
+            }
+        }
+        //public static void UiInvoke(Action a)
         //{
-
-        //    try
-        //    {
-        //        masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
-        //        masterRtu.WriteSingleCoil(10, 3999, true);
-        //        ReadCoilData = masterRtu.ReadCoils(slaveAddress,coilAddress,numberOfPoints);    // read Coil
-        //        foreach (var item in ReadCoilData)
-        //        {
-        //            //Console.WriteLine(item);
-        //            MessageBox.Show(item.ToString());
-        //        }
-        //    }
-        //    catch (Exception err)
-        //    {
-        //        MessageBox.Show(err.Message);
-        //    }
-
+        //    Application.Current.Dispatcher.Invoke(a);
         //}
+        void PrintCoil(object state)
+        {
+            if (serialPort.IsOpen)
+            {
+                //if (viewModel.RTU)
+                {
+                    masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
+                    ReadCoilData = masterRtu.ReadCoils(10, 3999, 4);
+                    //viewModel.DisplayCoil();
+                    //UiInvoke(() => viewModel._itemHandler.Add(new Item("Hello")));
+                    //Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(
+                    //         () => viewModel._itemHandler.Add(new Item("Hello"))));
+
+
+                    //foreach (var item in ReadCoilData)
+                    //{
+                    //    MessageBox.Show(item.ToString());
+                    //}
+                    //viewModel.DisplayAutoCoilResult(ReadCoilData);
+                }
+                //else if (viewModel.ASCII)
+                //{
+                //    try
+                //    {
+                //        ReadCoilData = masterAscii.ReadCoils(10, 3999, 4);
+                       
+                //    }
+                //    catch (Exception)
+                //    {
+                //        serialPort.Close();
+                      
+                //    }
+                //}
+
+                //Console.WriteLine("Time is: {0}, Param is: {1}", DateTime.Now.ToLongTimeString(), state.ToString());
+                //if (this.listView4.InvokeRequired)
+                //{
+                //    CoilCount = 1;
+                //    InputCount = 1;
+                //    //ReadCoilData = masterRtu.ReadCoils(SlaveId, Address, Quentity);
+                //    foreach (var item in ReadCoilData)
+                //    {
+                //        listView4.Invoke((MethodInvoker)(() => listView4.Items.Add("Coil " + CoilCount + " " + item.ToString())));
+                //        CoilCount++;
+                //    }
+
+                //    if (listView4.Items.Count >= 5)
+                //    {
+                //        listView4.Invoke((MethodInvoker)(() => listView4.Items.Clear()));
+
+                //        CoilCount = 1;
+                //    }
+                //}
+            }
+        }
 
         //**********************************************Set Progress Bar Values*************************************************//
         private double _ProgressBarOpen;
@@ -276,6 +272,10 @@ namespace ModBusGUI.Models
         }
 
         private double _ReadCoilProgressBar = 0;
+        private int CoilCount;
+        private int InputCount;
+        private TimerCallback timeCB;
+
         public double ReadCoilProgressBar
         {
             get { return _ReadCoilProgressBar; }
