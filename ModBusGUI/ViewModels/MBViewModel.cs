@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO.Ports;
 using System;
 using System.Collections.ObjectModel;
+using System.Windows.Threading;
 
 namespace ModBusGUI.ViewModels
 {
@@ -111,6 +112,7 @@ namespace ModBusGUI.ViewModels
         private string _StopBits = "One";
         private byte _SlaveID = 10;
         private ushort _Address = 3999;
+        private ushort OriginalAddress;
         private ushort _Quentity = 4;
         private int SingleCoilPosition;
         private bool WriteCoil = false;
@@ -130,6 +132,7 @@ namespace ModBusGUI.ViewModels
         {
 
             mbModel = new MBModel();
+            OriginalAddress = _Address;
             
             //**************************************Call Button after Click*************************************************//
             ClickCommandOpen = new DelegateCommand(OpenConnection);
@@ -199,14 +202,14 @@ namespace ModBusGUI.ViewModels
         {
             get { return _itemHandler.WriteMCoil; }
         }
-        public ObservableCollection<AutoCoilItem> AutoCoil
-        {
-            get { return _itemHandler.AutoCoil; }
-        }
-        public ObservableCollection<AutoInputItem> AutoInput
-        {
-            get { return _itemHandler.AutoInput; }
-        }
+        //public ObservableCollection<AutoCoilItem> AutoCoil
+        //{
+        //    get { return _itemHandler.AutoCoil; }
+        //}
+        //public ObservableCollection<AutoInputItem> AutoInput
+        //{
+        //    get { return _itemHandler.AutoInput; }
+        //}
         //********************************************Demo Combo Box**********************************************//
         private ObservableCollection<Person> _persons;
         private ObservableCollection<CombParityBit> _PBits; 
@@ -325,14 +328,7 @@ namespace ModBusGUI.ViewModels
             get;
             private set;
         }
-        //****************************************Display Auto Coil Result on screen*****************************************//
-        public void DisplayCoil()
-        {
-            foreach (var item in mbModel.ReadCoilData)
-            {
-                MessageBox.Show(item.ToString());
-            }
-        }
+
 
         //********************************************Functions**************************************************************//
         private void OpenConnection()
@@ -455,6 +451,7 @@ namespace ModBusGUI.ViewModels
         public void WriteSingleCoil()
         {
             SingleCoilPosition = CheckSingleCoilPosition();     // check coil position status
+            _Address = OriginalAddress;
             for (int i = 0; i < SingleCoilPosition; i++)        // find coil position
             {
                 _Address++;
@@ -473,6 +470,7 @@ namespace ModBusGUI.ViewModels
                    mbModel.WriteSingleCoil(_SlaveID,_Address,true);
                     //mbModel.ReadCoil(_SlaveID, 3999, _Quentity);  //update Coil Data
                     _itemHandler.Add(new Item("true"));
+                    WriteSCoilProgressBar = 100;
                 }
                 else if(ASCII)
                 {
@@ -486,6 +484,7 @@ namespace ModBusGUI.ViewModels
                 {
                     mbModel.WriteSingleCoil(_SlaveID, _Address, false);
                     _itemHandler.Add(new Item("false"));
+                    WriteSCoilProgressBar = 100;
                 }
                 else if (ASCII)
                 {
@@ -548,6 +547,7 @@ namespace ModBusGUI.ViewModels
 
         public void WriteMultiCoil()
         {
+            _Address = OriginalAddress;
             //_itemHandler.WriteMAdd(new WriteItem(SPerson.Name));
             if (RTU)
             {
@@ -558,20 +558,29 @@ namespace ModBusGUI.ViewModels
             {
                 MultiOnCoilStatus();
                 mbModel.WriteMultiCoils(_SlaveID, _Address, WriteMultiCoilData);      // call write multi coil method
+                if(WriteMCoil.Count<=4)
+                {
+                    WriteMCoil.Clear();
+                }
                 foreach (var item in WriteMultiCoilData)
                 {
                     _itemHandler.WriteMAdd(new WriteItem(item.ToString()));
                 }
+                WriteMCoilProgressBar = 100;
             }
             else if(radioOffMulti)
             {
                 MultiOffCoilStatus();
                 mbModel.WriteMultiCoils(_SlaveID, _Address, WriteMultiCoilData);      // call write multi coil method
+                if (WriteMCoil.Count <= 4)
+                {
+                    WriteMCoil.Clear();
+                }
                 foreach (var item in WriteMultiCoilData)
                 {
                     _itemHandler.WriteMAdd(new WriteItem(item.ToString()));
                 }
-                
+                WriteMCoilProgressBar = 100;
 
             }
 
@@ -829,6 +838,24 @@ namespace ModBusGUI.ViewModels
                 SetProperty(ref _ReadCoilProgressBar, value);
             }
         }
+        private double _WriteSCoilProgressBar = 0;
+        public double WriteSCoilProgressBar
+        {
+            get { return _WriteSCoilProgressBar; }
+            private set
+            {
+                SetProperty(ref _WriteSCoilProgressBar, value);
+            }
+        }
+        private double _WriteMCoilProgressBar = 0;
+        public double WriteMCoilProgressBar
+        {
+            get { return _WriteMCoilProgressBar; }
+            private set
+            {
+                SetProperty(ref _WriteMCoilProgressBar, value);
+            }
+        }
 
     }
     // Combox Practice Classes
@@ -873,4 +900,20 @@ namespace ModBusGUI.ViewModels
             set { _name = value; }
         }
     }
+    // Dispatcher Practice class
+    //public static class DispatchService
+    //{
+    //    public static void Invoke(Action action)
+    //    {
+    //        Dispatcher dispatchObject = Application.Current.Dispatcher;
+    //        if (dispatchObject == null || dispatchObject.CheckAccess())
+    //        {
+    //            action();
+    //        }
+    //        else
+    //        {
+    //            dispatchObject.Invoke(action);
+    //        }
+    //    }
+    //}
 }

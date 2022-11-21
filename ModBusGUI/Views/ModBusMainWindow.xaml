@@ -12,19 +12,20 @@
         prism:ViewModelLocator.AutoWireViewModel="True"
         mc:Ignorable="d"
         Title="{Binding Header, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-        Height="614" Width="800" 
+        Height="690" Width="830" 
         Background="AntiqueWhite">
     <Grid Margin="0,0,0,18">
         <!--Grid for four Main Group Box-->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" MinHeight="209"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition MinHeight="32.96" Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition MinHeight="245" Height="Auto"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="39*"/>
-            <ColumnDefinition Width="41*"/>
+            <ColumnDefinition Width="401*"/>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition Width="421*"/>
         </Grid.ColumnDefinitions>
         <GroupBox Header="Open Connection" Grid.Row="0" Grid.RowSpan="3" Margin="0,0,0,222">
             <!--Groop box Open Connection-->
@@ -92,7 +93,7 @@
         </GroupBox>
         <!--End Group box Open Connection-->
 
-        <GroupBox Grid.Column="1" Header="Read Input / Coil" Grid.RowSpan="3" Margin="0,0,0,222">
+        <GroupBox Grid.Column="2" Header="Read Input / Coil" Grid.RowSpan="3" Margin="0,0,0,222">
             <!--Read Group Box-->
             <Grid Height="189">
                 <!--Grid Panel for Slave ID Address and Quentity-->
@@ -178,7 +179,7 @@
 
         <GroupBox Header="Write Single Coil" Grid.Row="2" Margin="0,10,0,0" FontWeight="Normal">
             <!--Start Write Single Coil Group Box-->
-            <Grid Height="195">
+            <Grid Margin="0,8,0,-6">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="199*"/>
                     <ColumnDefinition Width="0*"/>
@@ -249,6 +250,13 @@
                                 HorizontalAlignment="Center" VerticalAlignment="Center" 
                                 Width="70" Height="25"/>
                     </Grid>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <ProgressBar Margin="0,4,0,-19"
+                                     Value="{Binding WriteSCoilProgressBar,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                    </Grid>
                 </StackPanel>
                 <ListView Grid.Column="2" Margin="5,0,24,10" ItemsSource="{Binding Items}" FontWeight="Bold">
                     <ListView.ItemTemplate>
@@ -263,9 +271,9 @@
             </Grid>
         </GroupBox>
         <!--End Write Single Coil Group Box-->
-        <GroupBox Grid.Column="1" Header="Write Multi Coil" Grid.Row="2" Margin="0,10,0,0">
+        <GroupBox Grid.Column="2" Header="Write Multi Coil" Grid.Row="2" Margin="0,10,0,0">
             <!--Start Write Multi Coil Group Box-->
-            <Grid>
+            <Grid Margin="0,0,0,-12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="209*"/>
                     <ColumnDefinition Width="189*"/>
@@ -339,8 +347,15 @@
                                 HorizontalAlignment="Center" VerticalAlignment="Center"
                                 Height="25" Width="54"/>
                     </Grid>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <ProgressBar Margin="0,2,0,-16"
+                        Value="{Binding WriteMCoilProgressBar,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                    </Grid>
                 </StackPanel>
-                <ListView Grid.Column="1" Margin="10,10,10,10" ItemsSource="{Binding WriteMCoil,Mode=OneWay}" FontWeight="Bold">
+                <ListView Grid.Column="1" Margin="10,10,10,25" ItemsSource="{Binding WriteMCoil,Mode=OneWay}" FontWeight="Bold">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
@@ -353,14 +368,14 @@
                 </ListView>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Auto Update Coil and Input Status" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,20,-9" FontWeight="Bold">
-            <Grid>
+        <GroupBox Header="Auto Update Coil and Input Status" Grid.Row="3" Grid.ColumnSpan="3" Margin="6,27,0,-5" FontWeight="Bold">
+            <Grid Margin="-1,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <GroupBox Header="Coil Status">
-                    <ListView x:Name="ListViewAutoCoil" ItemsSource="{Binding AutoCoil}" FontWeight="Normal">
+                <GroupBox Header="Coil Status" Margin="4,0,0,-3">
+                    <ListView x:Name="ListViewAutoCoil" ItemsSource="{Binding MBModel.AutoCoil}" FontWeight="Normal" Margin="2">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel>
@@ -371,8 +386,8 @@
                         </ListView.ItemTemplate>
                     </ListView>
                 </GroupBox>
-                <GroupBox Grid.Column="1" Header="Input Status">
-                    <ListView x:Name="ListViewAutoInput" ItemsSource="{Binding AutoInput}" FontWeight="Normal">
+                <GroupBox Grid.Column="1" Header="Input Status" Margin="0,0,-1,-6">
+                    <ListView x:Name="ListViewAutoInput" ItemsSource="{Binding MBModel.AutoInput}" FontWeight="Normal" Margin="2">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel>
