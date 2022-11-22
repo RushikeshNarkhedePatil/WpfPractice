@@ -115,7 +115,7 @@ namespace PracticeMVVM.View {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/PracticeMVVM;V1.0.0.0;component/view/demo.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/PracticeMVVM;component/view/demo.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\View\Demo.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

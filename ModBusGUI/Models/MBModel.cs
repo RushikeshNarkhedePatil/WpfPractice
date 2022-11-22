@@ -15,10 +15,11 @@ namespace ModBusGUI.Models
 {
     public class MBModel:BindableBase
     {
-        private MBViewModel viewModel;
+        //private MBViewModel viewModel;
         private readonly ItemHandler _itemHandler;
         private SerialPort serialPort = new SerialPort(); //Create a new SerialPort object.
-        private Modbus.Device.IModbusSerialMaster masterRtu, masterAscii;
+        private IModbusSerialMaster masterAscii;
+        private IModbusSerialMaster masterRtu;
         public bool[] ReadCoilData = { false, false, false, false };
         public bool[] ReadInputData = { false, false, false, false };
         public MBModel()
@@ -53,7 +54,7 @@ namespace ModBusGUI.Models
         }
       
         // Open Connection Functionality
-        public void OpenConnectionRTU(string portName, int baudRate, Parity parity, int dataBits, StopBits stopBits)
+        public void OpenConnectionRTU(string portName, int baudRate, Parity parity, int dataBits, StopBits stopBits,string mode)
         {
             try
             {
@@ -66,7 +67,8 @@ namespace ModBusGUI.Models
                 ModbusSerialMaster masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
                 serialPort.Open();
                 ProgressBarOpen = 100;
-                AutoInputStatus();
+                AutoInputStatus(mode);
+                AutoCoilStatus(mode);
                 //ModBusMainWindow modBusMainWindow = new ModBusMainWindow();
                 //ProgressBarValue =100;
             }
@@ -75,6 +77,28 @@ namespace ModBusGUI.Models
                 MessageBox.Show(err.Message);
             }
             
+        }
+        public void OpenConnectionASCII(string portName, int baudRate, Parity parity, int dataBits, StopBits stopBits,string mode)
+        {
+            try
+            {
+                //MessageBox.Show(portName);
+                serialPort.PortName = portName;
+                serialPort.BaudRate = baudRate;
+                serialPort.Parity = parity;
+                serialPort.DataBits = dataBits;
+                serialPort.StopBits = stopBits;
+                ModbusSerialMaster masterAscii = ModbusSerialMaster.CreateAscii(serialPort);
+                serialPort.Open();
+                ProgressBarOpen = 100;
+                //AutoInputStatus(mode);
+                //AutoCoilStatus(mode);
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.Message);
+            }
+
         }
 
         public void CloseConnection()
@@ -104,33 +128,66 @@ namespace ModBusGUI.Models
           
         }
         public ArrayList arlist = new ArrayList();
-        public void ReadCoil(byte slaveAddress, ushort coilAddress, ushort numberOfPoints)
+        public void ReadCoil(byte slaveAddress, ushort coilAddress, ushort numberOfPoints,string mode)
         {
-            try
-            {
-                masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
-                ReadCoilData = masterRtu.ReadCoils(slaveAddress, coilAddress, numberOfPoints);    // read Coil
-            }
-            catch (Exception err)
-            {
-                MessageBox.Show(err.Message);
-            }
-           
-        }
-        public void WriteSingleCoil(byte slaveAddress, ushort coilAddress, bool value)
-        {
-            if(serialPort.IsOpen)
+            if(mode=="RTU")
             {
                 try
                 {
                     masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
-                    masterRtu.WriteSingleCoil(slaveAddress, coilAddress, value);
-                    AutoCoilStatus();
+                    ReadCoilData = masterRtu.ReadCoils(slaveAddress, coilAddress, numberOfPoints);    // read Coil
                 }
                 catch (Exception err)
                 {
-                    MessageBox.Show(err.Message, "Message",MessageBoxButton.OK,MessageBoxImage.Error);
+                    MessageBox.Show(err.Message);
                 }
+            }
+            else if(mode=="ASCII")
+            {
+                try
+                {
+                    masterAscii = ModbusSerialMaster.CreateAscii(serialPort);
+                    ReadCoilData = masterAscii.ReadCoils(slaveAddress, coilAddress, numberOfPoints);    // read Coil
+                }
+                catch (Exception err)
+                {
+                    MessageBox.Show(err.Message);
+                }
+            }
+           
+           
+        }
+        public void WriteSingleCoil(byte slaveAddress, ushort coilAddress, bool value,string mode)
+        {
+            if(serialPort.IsOpen)
+            {
+                if(mode=="RTU")
+                {
+                    try
+                    {
+                        masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
+                        masterRtu.WriteSingleCoil(slaveAddress, coilAddress, value);
+                        AutoCoilStatus(mode);
+                    }
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(err.Message, "Message", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                else if(mode=="ASCII")
+                {
+                    try
+                    {
+                        masterAscii = ModbusSerialMaster.CreateRtu(serialPort);
+                        masterAscii.WriteSingleCoil(slaveAddress, coilAddress, value);
+                        AutoCoilStatus(mode);
+                    }
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(err.Message, "Message", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+              
             }
             else
             {
@@ -140,12 +197,21 @@ namespace ModBusGUI.Models
         //*************************************** Write Multi Coil Function ********************************************//
 
         //Get Multi Coil Status
-        public bool[] MultiStatus(byte slaveAddress, ushort coilAddress, ushort numberOfPoints)
+        public bool[] MultiStatus(byte slaveAddress, ushort coilAddress, ushort numberOfPoints,string mode)
         {
             try
             {
-                masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
-                ReadCoilData = masterRtu.ReadCoils(slaveAddress, coilAddress, numberOfPoints);    // read Coil
+                if(mode=="RTU")
+                {
+                    masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
+                    ReadCoilData = masterRtu.ReadCoils(slaveAddress, coilAddress, numberOfPoints);    // read Coil
+                }
+                else if(mode=="ASCII")
+                {
+                    masterAscii = ModbusSerialMaster.CreateRtu(serialPort);
+                    ReadCoilData = masterAscii.ReadCoils(slaveAddress, coilAddress, numberOfPoints);    // read Coil
+                }
+               
             }
             catch (Exception err)
             {
@@ -155,13 +221,23 @@ namespace ModBusGUI.Models
 
         }
 
-        public void WriteMultiCoils(byte slaveAddress, ushort startAddress, bool[] data)
+        public void WriteMultiCoils(byte slaveAddress, ushort startAddress, bool[] data,string mode)
         {
             try
             {
-                masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
-                masterRtu.WriteMultipleCoils(slaveAddress, startAddress, data);    // write multi Coil
-                AutoCoilStatus();
+                if(mode=="RTU")
+                {
+                    masterRtu = ModbusSerialMaster.CreateRtu(serialPort);
+                    masterRtu.WriteMultipleCoils(slaveAddress, startAddress, data);    // write multi Coil
+                    AutoCoilStatus(mode);
+                }
+                else if(mode=="ASCII")
+                {
+                    masterAscii = ModbusSerialMaster.CreateAscii(serialPort);
+                    masterAscii.WriteMultipleCoils(slaveAddress, startAddress, data);    // write multi Coil
+                    AutoCoilStatus(mode);
+                }
+
             }
             catch (Exception err)
             {
@@ -181,23 +257,33 @@ namespace ModBusGUI.Models
         }
         //****************************************Auto Display Coil Status**************************************//
 
-        public void AutoCoilStatus()
+        public void AutoCoilStatus(string mode)
         {
             if (serialPort.IsOpen)
             {
-                timeCB = new TimerCallback(PrintCoil);
-                System.Threading.Timer t = new System.Threading.Timer(
-                timeCB,   // The TimerCallback delegate type. 
-                "Hi",     // Any info to pass into the called method.
-                0,        // Amount of time to wait before starting.
-                1000);
+                if(mode=="RTU")
+                {
+                    timeCB = new TimerCallback(PrintCoilRTU);
+                    System.Threading.Timer t = new System.Threading.Timer(
+                    timeCB, 
+                    "Hi",    
+                    0,       
+                    1000);
+                }
+                else if(mode=="ASCII")
+                {
+
+                    timeCB = new TimerCallback(PrintCoilASCII);
+                    System.Threading.Timer t = new System.Threading.Timer(
+                    timeCB,
+                    "Hi",
+                    0,
+                    1000);
+                }
+               
             }
         }
-        //public static void UiInvoke(Action a)
-        //{
-        //    Application.Current.Dispatcher.Invoke(a);
-        //}
-        void PrintCoil(object state)
+        void PrintCoilRTU(object state)
         {
             if (serialPort.IsOpen)
             {
@@ -220,20 +306,56 @@ namespace ModBusGUI.Models
                 });
             }
         }
-        public void AutoInputStatus()
+        void PrintCoilASCII(object state)
         {
             if (serialPort.IsOpen)
             {
-                timeCB = new TimerCallback(PrintInput);
-                System.Threading.Timer t = new System.Threading.Timer(
-                timeCB,   // The TimerCallback delegate type. 
-                "Hi",     // Any info to pass into the called method.
-                0,        // Amount of time to wait before starting.
-                1000);
+                DispatchService.Invoke(() =>
+                {
+                    masterAscii = ModbusSerialMaster.CreateAscii(serialPort);
+                    ReadCoilData = masterAscii.ReadCoils(10, 3999, 4);
+                    //ProgressBarOpen = 50;
+
+                    foreach (var item in ReadCoilData)
+                    {
+                        _itemHandler.AutoCoilAdd(new AutoCoilItem(item.ToString()));
+
+                    }
+                    if (AutoCoil.Count >= 5)
+                    {
+                        AutoCoil.Clear();
+                    }
+
+                });
+            }
+        }
+        public void AutoInputStatus(string mode)
+        {
+            if (serialPort.IsOpen)
+            {
+                if (mode == "RTU")
+                {
+                    timeCB = new TimerCallback(PrintInputRTU);
+                    System.Threading.Timer t = new System.Threading.Timer(
+                    timeCB,   
+                    "Hi",    
+                    0,        
+                    1000);
+                }
+                else if (mode == "ASCII")
+                {
+                    timeCB = new TimerCallback(PrintInputASCII);
+                    System.Threading.Timer t = new System.Threading.Timer(
+                    timeCB,   
+                    "Hi",     
+                    0,       
+                    1000);
+                }
+               
             }
         }
 
-        private void PrintInput(object state)
+        private void PrintInputRTU(object state)
         {
             if (serialPort.IsOpen)
             {
@@ -248,7 +370,30 @@ namespace ModBusGUI.Models
                         _itemHandler.AutoInputAdd(new AutoInputItem(item.ToString()));
 
                     }
-                    if (AutoCoil.Count >= 5)
+                    if (AutoInput.Count >= 5)
+                    {
+                        AutoInput.Clear();
+                    }
+
+                });
+            }
+        }
+        private void PrintInputASCII(object state)
+        {
+            if (serialPort.IsOpen)
+            {
+                DispatchService.Invoke(() =>
+                {
+                    masterAscii = ModbusSerialMaster.CreateAscii(serialPort);
+                    ReadCoilData = masterAscii.ReadInputs(10, 7999, 4);
+                    //ProgressBarOpen = 50;
+
+                    foreach (var item in ReadCoilData)
+                    {
+                        _itemHandler.AutoInputAdd(new AutoInputItem(item.ToString()));
+
+                    }
+                    if (AutoInput.Count >= 5)
                     {
                         AutoInput.Clear();
                     }
@@ -269,8 +414,7 @@ namespace ModBusGUI.Models
         }
 
         private double _ReadCoilProgressBar = 0;
-        private int CoilCount;
-        private int InputCount;
+
         private TimerCallback timeCB;
 
         public double ReadCoilProgressBar

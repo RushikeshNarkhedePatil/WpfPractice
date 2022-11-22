@@ -24,4 +24,3 @@ C:\Users\varad\source\repos\PracticeWPF\PracticeMVVM\obj\Debug\netcoreapp3.1\Pra
 C:\Users\varad\source\repos\PracticeWPF\PracticeMVVM\obj\Debug\netcoreapp3.1\PracticeMVVM.dll
 C:\Users\varad\source\repos\PracticeWPF\PracticeMVVM\obj\Debug\netcoreapp3.1\PracticeMVVM.pdb
 C:\Users\varad\source\repos\PracticeWPF\PracticeMVVM\obj\Debug\netcoreapp3.1\PracticeMVVM.genruntimeconfig.cache
-C:\Users\varad\source\repos\PracticeWPF\PracticeMVVM\obj\Debug\netcoreapp3.1\GeneratedInternalTypeHelper.g.cs

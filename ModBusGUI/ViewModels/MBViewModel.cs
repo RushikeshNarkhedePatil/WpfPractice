@@ -9,94 +9,11 @@ using System.IO.Ports;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
+using Modbus.Device;
 
 namespace ModBusGUI.ViewModels
 {
-    //********************************************************Set List View Collection **************************************************//
-    public class WriteItem
-    {
-        public WriteItem(string name)
-        {
-            WriteMCoil = name;
-        }
-        public string WriteMCoil { get; set; }
-    }
-    public class ReadItem
-    {
-        public ReadItem(string name)
-        {
-            Read = name;
-        }
-        public string Read { get; set; }
-    }
-    public class AutoCoilItem
-    {
-        public AutoCoilItem(string name)
-        {
-            ACName = name;
-        }
-        public string ACName { get; set; }
-    }
-
-    public class AutoInputItem
-    {
-        public AutoInputItem(string name)
-        {
-            AIName = name;
-        }
-        public string AIName { get; set; }
-    }
-
-    public class Item
-    {
-        public Item(string name)
-        {
-            Name = name;
-        }
-
-        public string Name { get; set; }
-      
-    }
-
-    public class ItemHandler
-    {
-        public ItemHandler()
-        {
-            Items = new ObservableCollection<Item>();
-            Read = new ObservableCollection<ReadItem>();
-            WriteMCoil = new ObservableCollection<WriteItem>();
-            AutoCoil = new ObservableCollection<AutoCoilItem>();
-            AutoInput = new ObservableCollection<AutoInputItem>();
-        }
-
-        public ObservableCollection<Item> Items { get; private set; }
-        public ObservableCollection<WriteItem> WriteMCoil { get; private set; }
-        public ObservableCollection<ReadItem> Read { get; private set; }
-        public ObservableCollection<AutoCoilItem> AutoCoil { get; private set; }
-        public ObservableCollection<AutoInputItem> AutoInput { get; private set; }
-
-        public void Add(Item item)
-        {
-            Items.Add(item);
-        }
-        public void ReadAdd(ReadItem item)
-        {
-            Read.Add(item);
-        }
-        public void WriteMAdd(WriteItem item)
-        {
-            WriteMCoil.Add(item);
-        }
-        public void AutoCoilAdd(AutoCoilItem item)
-        {
-            AutoCoil.Add(item);
-        }
-        public void AutoInputAdd(AutoInputItem item)
-        {
-            AutoInput.Add(item);
-        }
-    }
-    //*************************************End List View Classes*********************************************************//
+    
     class MBViewModel:BindableBase
     {
         private SerialPort serialPort = new SerialPort(); //Create a new SerialPort object.
@@ -104,7 +21,7 @@ namespace ModBusGUI.ViewModels
         private string _Title = "ModBus Project";
         private Parity parity;
         private StopBits stopBits;
-        private string _Message;
+        //private string _Message;
         private string _PortName = "COM4";
         private int _BaudRate = 9600;
         private int _DataBits = 8;
@@ -115,10 +32,12 @@ namespace ModBusGUI.ViewModels
         private ushort OriginalAddress;
         private ushort _Quentity = 4;
         private int SingleCoilPosition;
-        private bool WriteCoil = false;
+        //private bool WriteCoil = false;
+        private string Mode;
         private bool PortStatus = false;
         public bool[] ReadCoilData = { false, false, false, false };
         private bool[] WriteMultiCoilData = { false, false, false, false };
+        private bool validateDataStatus;
 
         public string Header
         {
@@ -126,7 +45,7 @@ namespace ModBusGUI.ViewModels
             set { SetProperty(ref _Title, value); }
         }
         // Create Observable Collection
-        private ObservableCollection<Person> person;
+        //private ObservableCollection<Person> person;
         public readonly ItemHandler _itemHandler;
         public MBViewModel()
         {
@@ -144,18 +63,6 @@ namespace ModBusGUI.ViewModels
             ClearSCList = new DelegateCommand(ClearSCoilList);
             ClearMCList = new DelegateCommand(ClearMCoilList);
 
-            //ModBusMainWindow mainview = new ModBusMainWindow();
-            // Observable Collection
-            //person = new ObservableCollection<Person>()
-            //{
-
-            //    new Person() { Name = "Prabhat", Address = "India" },
-
-            //    new Person() { Name = "Smith", Address = "US" }
-            //};
-            //lstRead.ItemsSource = person;
-
-            // List View Item
             _itemHandler = new ItemHandler();
             //_itemHandler.Add(new Item("John Doe"));
             //_itemHandler.AutoCoilAdd(new AutoCoilItem("John Doe"));
@@ -331,26 +238,87 @@ namespace ModBusGUI.ViewModels
 
 
         //********************************************Functions**************************************************************//
+        public string CheckMode()
+        {
+            if(RTU)
+            {
+                return "RTU";
+            }
+            else if(ASCII)
+            {
+                return "ASCII";
+            }
+            return "-1";
+        }
+        private bool validateInformation()
+        {
+            // Set all Values
+            var ReqParityBit = serialPort.Parity.ToString();
+            var ReqStopBit = serialPort.StopBits.ToString();
+            int ReqDataBit =serialPort.DataBits;
+            int ReqBaudRate = serialPort.BaudRate;
+            string ReqCompPort = serialPort.PortName;
+            //var ReqMode= ModbusSerialMaster.CreateRtu(serialPort).ToString();
+            if (ReqParityBit==_Parity&&ReqStopBit==_StopBits&&ReqDataBit==_DataBits&&ReqBaudRate==BaudRate)
+            {
+                return true;
+            }
+            else
+            {
+                MessageBoxResult result = MessageBox.Show("Please Check all Information Correct Or Not\n"+ "Do you want Any suggestion?", "suggestion",
+                    MessageBoxButton.YesNo, MessageBoxImage.Information);
+                if (result == MessageBoxResult.Yes)
+                {
+                    MessageBox.Show("ParityBit  \t = "+ReqParityBit+"\n"+ 
+                        "StopBits\t = " + ReqStopBit +"\n"+
+                        "CompPort = " + ReqCompPort + "\n" +
+                        "DataBits\t = " + ReqDataBit.ToString() + "\n" +
+                        "BaudRate = " + ReqBaudRate.ToString(),"Suggestion",MessageBoxButton.OK,MessageBoxImage.Warning);
+                }
+                else
+                {
+                    // No code here  
+                }
+                return false;
+            }
+        }
         private void OpenConnection()
         {
-            if (SPBits== null || SCombStopBits == null||RTU==false||PortName==null||BaudRate==0||DataBits==0)
+            Mode = CheckMode();
+            if (SPBits== null || SCombStopBits == null||RTU==false&&ASCII==false||PortName==null||BaudRate==0||DataBits==0)
             {
                 MessageBox.Show("Please fill all values","Message");
             }
             else
             {
-                if (_RTU == true)
-                {
-                    //MessageBox.Show(_PortName);
-                    parity = serialPort.Parity = (Parity)Enum.Parse(typeof(Parity), _SPBits.Name);               // typecast value
-                    stopBits = serialPort.StopBits = (StopBits)Enum.Parse(typeof(StopBits), _SCombStopBits.Name);
+             
+                validateDataStatus = validateInformation(); // Check for validation
+                parity = serialPort.Parity = (Parity)Enum.Parse(typeof(Parity), _SPBits.Name);               // typecast value
+                stopBits = serialPort.StopBits = (StopBits)Enum.Parse(typeof(StopBits), _SCombStopBits.Name);
 
-                    mbModel.OpenConnectionRTU(_PortName, _BaudRate, parity, _DataBits, stopBits);           // Call Open Connection
-                    mbModel.AutoCoilStatus();
-                }
-                if (_ASCII == true)
+                if (_RTU == true && validateDataStatus)
                 {
-                    MessageBox.Show("Implementation Remaining");
+                    if(_DataBits==8)
+                    {
+                        mbModel.OpenConnectionRTU(_PortName, _BaudRate, parity, _DataBits, stopBits, Mode);           // Call Open Connection
+                    }
+                    else
+                    {
+                        MessageBox.Show("Not Supported Please check data bit or Mode", "Message", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    //mbModel.AutoCoilStatus(Mode);
+                }
+                else if (_ASCII == true && validateDataStatus)
+                {
+                    if (_DataBits == 7)
+                    {
+                        mbModel.OpenConnectionASCII(_PortName, _BaudRate, parity, _DataBits, stopBits, Mode);           // Call Open Connection
+                    }
+                    else
+                    {
+                        MessageBox.Show("Not Supported Please check data bit or Mode", "Message", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+
                 }
             } 
         }
@@ -363,14 +331,14 @@ namespace ModBusGUI.ViewModels
         private void ReadCoilAndInput()
         {
 
-            //Dictionary<string, string> DicReadInputCoil =new Dictionary<string, string>();
             if (_Coil&&ScombReadAddresses!=null&&_SlaveID!=0&&_Quentity!=0)
             {
                 PortStatus=mbModel.CheckPortOnOff();    // check on off serial port connection
                 if (PortStatus)
                 {
+                    Mode = CheckMode(); // Check communication mode RTU or ASCII
                     _Address = ScombReadAddresses.Name;
-                    mbModel.ReadCoil(_SlaveID, _Address, _Quentity);
+                    mbModel.ReadCoil(_SlaveID, _Address, _Quentity,Mode);
                     short i = 0;
                     if (Read.Count != 0)   // if list is not empty then first clear list then add new item
                     {
@@ -395,7 +363,7 @@ namespace ModBusGUI.ViewModels
             else if(_Input && ScombReadAddresses != null && _SlaveID != 0 && _Quentity != 0)
             {
                 _Address = ScombReadAddresses.Name;
-                MessageBox.Show("Click On Input");
+                //MessageBox.Show("Click On Input");
                 mbModel.ReadInput(_SlaveID, _Address, _Quentity);
                 int i = 0;
                 foreach (var item in mbModel.ReadInputData)
@@ -419,11 +387,13 @@ namespace ModBusGUI.ViewModels
         private void ClearMCoilList()
         {
             WriteMCoil.Clear();
+            WriteMCoilProgressBar = 0;
         }
 
         private void ClearSCoilList()
         {
             Items.Clear();
+            WriteSCoilProgressBar = 0;
         }
         private int CheckSingleCoilPosition()
         {
@@ -465,24 +435,24 @@ namespace ModBusGUI.ViewModels
             if (radioOnSingle)
             {
                
-                if (RTU)
+                if (RTU||ASCII)
                 {
-                   mbModel.WriteSingleCoil(_SlaveID,_Address,true);
+                   mbModel.WriteSingleCoil(_SlaveID,_Address,true,Mode);
                     //mbModel.ReadCoil(_SlaveID, 3999, _Quentity);  //update Coil Data
                     _itemHandler.Add(new Item("true"));
                     WriteSCoilProgressBar = 100;
                 }
-                else if(ASCII)
-                {
-                    MessageBox.Show("ASCII emplementation remaining");
-                }
+                //else if(ASCII)
+                //{
+                //    MessageBox.Show("ASCII emplementation remaining");
+                //}
                 
             }
             else if(radioOffSingle)
             {
                 if (RTU)
                 {
-                    mbModel.WriteSingleCoil(_SlaveID, _Address, false);
+                    mbModel.WriteSingleCoil(_SlaveID, _Address, false,Mode);
                     _itemHandler.Add(new Item("false"));
                     WriteSCoilProgressBar = 100;
                 }
@@ -549,15 +519,11 @@ namespace ModBusGUI.ViewModels
         {
             _Address = OriginalAddress;
             //_itemHandler.WriteMAdd(new WriteItem(SPerson.Name));
-            if (RTU)
-            {
-                WriteMultiCoilData = mbModel.MultiStatus(_SlaveID, _Address, _Quentity); // check status
-               
-            }
+            WriteMultiCoilData = mbModel.MultiStatus(_SlaveID, _Address, _Quentity,Mode); // check status
             if(radioOnMulti)
             {
                 MultiOnCoilStatus();
-                mbModel.WriteMultiCoils(_SlaveID, _Address, WriteMultiCoilData);      // call write multi coil method
+                mbModel.WriteMultiCoils(_SlaveID, _Address, WriteMultiCoilData,Mode);      // call write multi coil method
                 if(WriteMCoil.Count<=4)
                 {
                     WriteMCoil.Clear();
@@ -571,7 +537,7 @@ namespace ModBusGUI.ViewModels
             else if(radioOffMulti)
             {
                 MultiOffCoilStatus();
-                mbModel.WriteMultiCoils(_SlaveID, _Address, WriteMultiCoilData);      // call write multi coil method
+                mbModel.WriteMultiCoils(_SlaveID, _Address, WriteMultiCoilData,Mode);      // call write multi coil method
                 if (WriteMCoil.Count <= 4)
                 {
                     WriteMCoil.Clear();
@@ -858,7 +824,7 @@ namespace ModBusGUI.ViewModels
         }
 
     }
-    // Combox Practice Classes
+    //************************************ Combox Set Value Classes************************************//
     class Person
     {
         private string _name;
@@ -900,20 +866,4 @@ namespace ModBusGUI.ViewModels
             set { _name = value; }
         }
     }
-    // Dispatcher Practice class
-    //public static class DispatchService
-    //{
-    //    public static void Invoke(Action action)
-    //    {
-    //        Dispatcher dispatchObject = Application.Current.Dispatcher;
-    //        if (dispatchObject == null || dispatchObject.CheckAccess())
-    //        {
-    //            action();
-    //        }
-    //        else
-    //        {
-    //            dispatchObject.Invoke(action);
-    //        }
-    //    }
-    //}
 }

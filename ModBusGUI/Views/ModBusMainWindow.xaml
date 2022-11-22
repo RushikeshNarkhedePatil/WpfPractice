@@ -35,14 +35,14 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0">
-                    <Grid Height="142">
+                    <Grid Height="154">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="25*"/>
+                            <RowDefinition Height="25*"/>
+                            <RowDefinition Height="24*"/>
+                            <RowDefinition Height="24*"/>
+                            <RowDefinition Height="25*"/>
+                            <RowDefinition Height="30*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -51,7 +51,7 @@
                         <Label Grid.Row="0" Grid.Column="0" Content="Com Port" Margin="10,0,0,23" Grid.RowSpan="2"/>
                         <Label Grid.Row="1" Grid.Column="0" Content="Baud Rate" Margin="10,0,0,0"/>
                         <Label Grid.Row="1" Grid.Column="0" Content="Data Bit" Margin="10,23,0,0" Grid.RowSpan="2"/>
-                        <Label Grid.Row="3" Grid.Column="0" Content="Parity Bit" Margin="10,0,0,23" Grid.RowSpan="2"/>
+                        <Label Grid.Row="3" Grid.Column="0" Content="Parity Bit" Margin="10,0,0,1"/>
                         <Label Grid.Row="4" Grid.Column="0" Content="Stop Bit" Margin="10,0,0,0"/>
                         <TextBox x:Name="txtPort" Grid.Row="0" Grid.Column="1" Text="{Binding PortName, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
                         <TextBox x:Name="txtBaudRate" Grid.Row="1" Grid.Column="1" Text="{Binding BaudRate, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
@@ -69,13 +69,11 @@
                                   Grid.Column="1" Margin="0,23,10,5" Grid.RowSpan="2">
                         </ComboBox>
                         <Button x:Name="btnOpen" Content="Open"  Command="{Binding ClickCommandOpen}"  
-                                Grid.Row="4" Grid.Column="0" Margin="10,0,18,5.5" FontWeight="Bold" 
+                                Grid.Row="5" Grid.Column="0" Margin="10,0,18,2" FontWeight="Bold" 
                                 BorderBrush="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Background="#FF35A600" 
-                                Height="19" Grid.RowSpan="2" VerticalAlignment="Bottom">
-
-                        </Button>
+                                Height="22" VerticalAlignment="Bottom"/>
                         <Button x:Name="btnClose" Content="Close" Command="{Binding ClickCommandClose}"
-                                Grid.Row="5" Grid.Column="1" Margin="10,0,20,5" Background="#FFFD1515"/>
+                                Grid.Row="5" Grid.Column="1" Margin="10,4,20,3" Background="#FFFD1515"/>
                     </Grid>
                     <ProgressBar x:Name="ProgressBarOpen" Height="15"  Margin="10" Value="{Binding MBModel.ProgressBarOpen,Mode=OneWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
@@ -292,17 +290,17 @@
                         <Label Content="Slave ID" Grid.Row="0" Grid.Column="0"/>
                         <Label Content="Address" Grid.Row="1" Grid.Column="0"/>
                         <Label Content="Write Data" Grid.Row="2" Grid.Column="0" Margin="0,0,10,13"/>
-                        <TextBox x:Name="txtWriteMultiSlaveId" Grid.Row="0" Grid.ColumnSpan="2" 
+                        <TextBox x:Name="txtWriteMultiSlaveId" Grid.Row="0" 
                                  Text="{Binding SlaveID,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
-                                 Margin="99,0,10,5"/>
-                        <TextBox x:Name="txtWriteMultiAddress" Grid.Row="1" Grid.ColumnSpan="2" 
+                                 Margin="3,0,10,5" Grid.Column="1"/>
+                        <TextBox x:Name="txtWriteMultiAddress" Grid.Row="1" 
                                  Text="{Binding Address,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
-                                 Margin="99,0,10,5"/>
+                                 Margin="3,0,10,5" Grid.Column="1"/>
                         <ComboBox Grid.Row="2" x:Name="CombWriteMultiCoil" 
                                    ItemsSource="{Binding Path=Persons}"    
                                    SelectedItem="{Binding Path=SPerson}"  
                                    DisplayMemberPath="Name"
-                                  Margin="5,0,10,21" Grid.Column="1"/>
+                                  Margin="3,0,10,21" Grid.Column="1"/>
                     </Grid>
                     <GroupBox Header="Value" Height="40" Width="157">
                         <Grid Margin="0,0,46,0">

@@ -100,8 +100,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\MBModel.cs" />
-    <Compile Include="Models\MBOpenConnection.cs" />
     <Compile Include="ViewModels\DispatchService.cs" />
+    <Compile Include="ViewModels\ItemHandler.cs" />
     <Compile Include="ViewModels\MBViewModel.cs" />
     <Compile Include="Views\ModBusMainWindow.xaml.cs">
       <DependentUpon>ModBusMainWindow.xaml</DependentUpon>
