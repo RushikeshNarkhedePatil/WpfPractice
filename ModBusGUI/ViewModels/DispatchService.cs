@@ -12,15 +12,23 @@ namespace ModBusGUI.ViewModels
     {
         public static void Invoke(Action action)
         {
-            Dispatcher dispatchObject = Application.Current.Dispatcher;
-            if (dispatchObject == null || dispatchObject.CheckAccess())
+            try
             {
-                action();
+                Dispatcher dispatchObject = Application.Current.Dispatcher;
+                if (dispatchObject == null || dispatchObject.CheckAccess())
+                {
+                    action();
+                }
+                else
+                {
+                    dispatchObject.Invoke(action);
+                }
             }
-            else
+            catch (Exception err)
             {
-                dispatchObject.Invoke(action);
+                MessageBox.Show(err.Message,"Error",MessageBoxButton.OK,MessageBoxImage.Error);
             }
+           
         }
     }
 }

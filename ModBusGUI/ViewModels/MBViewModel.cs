@@ -25,11 +25,12 @@ namespace ModBusGUI.ViewModels
         private string _PortName = "COM4";
         private int _BaudRate = 9600;
         private int _DataBits = 8;
-        private string _Parity = "None";
-        private string _StopBits = "One";
+        private string _Parity;
+        private string _StopBits;
         private byte _SlaveID = 10;
         private ushort _Address = 3999;
-        private ushort OriginalAddress;
+        private ushort _MCAddress = 3999;
+        private ushort TempAddress;
         private ushort _Quentity = 4;
         private int SingleCoilPosition;
         //private bool WriteCoil = false;
@@ -51,7 +52,13 @@ namespace ModBusGUI.ViewModels
         {
 
             mbModel = new MBModel();
-            OriginalAddress = _Address;
+            // Set Check Box and Radio Button Values
+            CheckCoil1 = true;
+            RTU = true;
+            radioOnSingle = true;
+            radioOnMulti = true;
+            SingleCoil1 = true;
+            Coil = true;
             
             //**************************************Call Button after Click*************************************************//
             ClickCommandOpen = new DelegateCommand(OpenConnection);
@@ -60,8 +67,8 @@ namespace ModBusGUI.ViewModels
             CmdWriteMultiCoil = new DelegateCommand(WriteMultiCoil);
             ClickCommandClose = new DelegateCommand(CloseConnection);
             ClearReadList = new DelegateCommand(ClearCoilAndInput);
-            ClearSCList = new DelegateCommand(ClearSCoilList);
-            ClearMCList = new DelegateCommand(ClearMCoilList);
+            //ClearSCList = new DelegateCommand(ClearSCoilList);
+            //ClearMCList = new DelegateCommand(ClearMCoilList);
 
             _itemHandler = new ItemHandler();
             //_itemHandler.Add(new Item("John Doe"));
@@ -205,11 +212,11 @@ namespace ModBusGUI.ViewModels
             get;
             private set;
         }
-        public ICommand ClearSCList
-        {
-            get;
-            private set;
-        }
+        //public ICommand ClearSCList
+        //{
+        //    get;
+        //    private set;
+        //}
         public ICommand ClearMCList
         {
             get;
@@ -259,7 +266,7 @@ namespace ModBusGUI.ViewModels
             int ReqBaudRate = serialPort.BaudRate;
             string ReqCompPort = serialPort.PortName;
             //var ReqMode= ModbusSerialMaster.CreateRtu(serialPort).ToString();
-            if (ReqParityBit==_Parity&&ReqStopBit==_StopBits&&ReqDataBit==_DataBits&&ReqBaudRate==BaudRate)
+            if (ReqParityBit== _SPBits.Name &&ReqStopBit==_SCombStopBits.Name&&ReqDataBit==_DataBits&&ReqBaudRate==BaudRate)
             {
                 return true;
             }
@@ -296,7 +303,7 @@ namespace ModBusGUI.ViewModels
                 parity = serialPort.Parity = (Parity)Enum.Parse(typeof(Parity), _SPBits.Name);               // typecast value
                 stopBits = serialPort.StopBits = (StopBits)Enum.Parse(typeof(StopBits), _SCombStopBits.Name);
 
-                if (_RTU == true && validateDataStatus)
+                if (_RTU  && validateDataStatus)
                 {
                     if(_DataBits==8)
                     {
@@ -306,9 +313,9 @@ namespace ModBusGUI.ViewModels
                     {
                         MessageBox.Show("Not Supported Please check data bit or Mode", "Message", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
-                    //mbModel.AutoCoilStatus(Mode);
+                    mbModel.AutoCoilStatus(Mode);
                 }
-                else if (_ASCII == true && validateDataStatus)
+                else if (_ASCII  && validateDataStatus)
                 {
                     if (_DataBits == 7)
                     {
@@ -384,17 +391,17 @@ namespace ModBusGUI.ViewModels
             Read.Clear();
             ReadCoilProgressBar = 0;
         }
-        private void ClearMCoilList()
-        {
-            WriteMCoil.Clear();
-            WriteMCoilProgressBar = 0;
-        }
+        //private void ClearMCoilList()
+        //{
+        //    WriteMCoil.Clear();
+        //    WriteMCoilProgressBar = 0;
+        //}
 
-        private void ClearSCoilList()
-        {
-            Items.Clear();
-            WriteSCoilProgressBar = 0;
-        }
+        //private void ClearSCoilList()
+        //{
+        //    Items.Clear();
+        //    WriteSCoilProgressBar = 0;
+        //}
         private int CheckSingleCoilPosition()
         {
             if (SingleCoil1)
@@ -421,14 +428,14 @@ namespace ModBusGUI.ViewModels
         public void WriteSingleCoil()
         {
             SingleCoilPosition = CheckSingleCoilPosition();     // check coil position status
-            _Address = OriginalAddress;
+            TempAddress = Address;
             for (int i = 0; i < SingleCoilPosition; i++)        // find coil position
             {
-                _Address++;
+                TempAddress++;
             }
             if (SingleCoilPosition == -1)          // filter
             {
-                MessageBox.Show("Please Select Coil Position", "Information");
+                MessageBox.Show("Please Select Coil ", "Information");
                 return;
             }
 
@@ -437,24 +444,24 @@ namespace ModBusGUI.ViewModels
                
                 if (RTU||ASCII)
                 {
-                   mbModel.WriteSingleCoil(_SlaveID,_Address,true,Mode);
+                   mbModel.WriteSingleCoil(_SlaveID, TempAddress, true,Mode);
                     //mbModel.ReadCoil(_SlaveID, 3999, _Quentity);  //update Coil Data
-                    _itemHandler.Add(new Item("true"));
-                    WriteSCoilProgressBar = 100;
+                    //_itemHandler.Add(new Item("true"));
+                    //WriteSCoilProgressBar = 100;
                 }
-                //else if(ASCII)
-                //{
-                //    MessageBox.Show("ASCII emplementation remaining");
-                //}
-                
+                else 
+                {
+                    MessageBox.Show("Check Connection","Message",MessageBoxButton.OK,MessageBoxImage.Information);
+                }
+
             }
             else if(radioOffSingle)
             {
                 if (RTU)
                 {
-                    mbModel.WriteSingleCoil(_SlaveID, _Address, false,Mode);
-                    _itemHandler.Add(new Item("false"));
-                    WriteSCoilProgressBar = 100;
+                    mbModel.WriteSingleCoil(_SlaveID, TempAddress, false,Mode);
+                    //_itemHandler.Add(new Item("false"));
+                    //WriteSCoilProgressBar = 100;
                 }
                 else if (ASCII)
                 {
@@ -517,38 +524,43 @@ namespace ModBusGUI.ViewModels
 
         public void WriteMultiCoil()
         {
-            _Address = OriginalAddress;
+            TempAddress = MCAddress;
             //_itemHandler.WriteMAdd(new WriteItem(SPerson.Name));
             WriteMultiCoilData = mbModel.MultiStatus(_SlaveID, _Address, _Quentity,Mode); // check status
-            if(radioOnMulti)
+            if (radioOnMulti && (CheckCoil1 || CheckCoil2 || CheckCoil3 || CheckCoil4))
             {
                 MultiOnCoilStatus();
-                mbModel.WriteMultiCoils(_SlaveID, _Address, WriteMultiCoilData,Mode);      // call write multi coil method
-                if(WriteMCoil.Count<=4)
-                {
-                    WriteMCoil.Clear();
-                }
-                foreach (var item in WriteMultiCoilData)
-                {
-                    _itemHandler.WriteMAdd(new WriteItem(item.ToString()));
-                }
-                WriteMCoilProgressBar = 100;
+                mbModel.WriteMultiCoils(_SlaveID, TempAddress, WriteMultiCoilData, Mode);      // call write multi coil method
+                //if (WriteMCoil.Count <= 4)
+                //{
+                //    WriteMCoil.Clear();
+                //}
+                //foreach (var item in WriteMultiCoilData)
+                //{
+                //    _itemHandler.WriteMAdd(new WriteItem(item.ToString()));
+                //}
+                //WriteMCoilProgressBar = 100;
             }
-            else if(radioOffMulti)
+            else if (radioOffMulti && (CheckCoil1 || CheckCoil2 || CheckCoil3 || CheckCoil4))
             {
                 MultiOffCoilStatus();
-                mbModel.WriteMultiCoils(_SlaveID, _Address, WriteMultiCoilData,Mode);      // call write multi coil method
-                if (WriteMCoil.Count <= 4)
-                {
-                    WriteMCoil.Clear();
-                }
-                foreach (var item in WriteMultiCoilData)
-                {
-                    _itemHandler.WriteMAdd(new WriteItem(item.ToString()));
-                }
-                WriteMCoilProgressBar = 100;
+                mbModel.WriteMultiCoils(_SlaveID, TempAddress, WriteMultiCoilData, Mode);      // call write multi coil method
+                //if (WriteMCoil.Count <= 4)
+                //{
+                //    WriteMCoil.Clear();
+                //}
+                //foreach (var item in WriteMultiCoilData)
+                //{
+                //    _itemHandler.WriteMAdd(new WriteItem(item.ToString()));
+                //}
+                //WriteMCoilProgressBar = 100;
 
             }
+            else
+            {
+                MessageBox.Show("Fill all Information");
+            }
+
 
         }
         //*******************************************End Functions*********************************************//
@@ -773,6 +785,14 @@ namespace ModBusGUI.ViewModels
             set
             {
                 SetProperty(ref _Address, value);
+            }
+        }
+        public ushort MCAddress
+        {
+            get { return _MCAddress; }
+            set
+            {
+                SetProperty(ref _MCAddress, value);
             }
         }
         public ushort Quentity

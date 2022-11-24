@@ -21,5 +21,9 @@ namespace ModBusGUI.Views
             this.DataContext = new MBViewModel();
         }
 
+        private void radioRTU_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

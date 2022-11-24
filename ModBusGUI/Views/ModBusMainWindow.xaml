@@ -58,9 +58,8 @@
                         <TextBox x:Name="txtData" Grid.Row="2" Grid.Column="1" Text="{Binding DataBits, Mode=TwoWay,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
                         <ComboBox x:Name="CombParityBit" Grid.Row="2" Grid.Column="1" Margin="0,22,10,5" Grid.RowSpan="2" 
                                    ItemsSource="{Binding Path=PBits}"
-                                   SelectedItem="{Binding Path=SPBits}"  
+                                   SelectedItem="{Binding Path=SPBits}" 
                                    DisplayMemberPath="Name">
-
                         </ComboBox>
                         <ComboBox x:Name="CombStopBit" Grid.Row="3" 
                                    ItemsSource="{Binding Path=CombStopBits}"    
@@ -203,7 +202,7 @@
                         <TextBox x:Name="txtSingleCoilAddress" Grid.Row="1" Grid.Column="1" 
                                  Text="{Binding Address,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
                                  Margin="0,0,10,10"/>
-                        <TextBox x:Name="txtSingleCoilData" Grid.Row="2" Grid.Column="1" Text="true" Margin="0,0,10,18"/>
+                        <TextBox x:Name="txtSingleCoilData" Grid.Row="2" Grid.Column="1" Text="true" Margin="0,0,10,18" IsEnabled="False"/>
                     </Grid>
                     <GroupBox Header="Value" Height="45" Width="169">
                         <Grid Margin="0,0,23,0">
@@ -244,7 +243,7 @@
                                 Command="{Binding CmdWriteSingleCoil}"
                                 VerticalAlignment="Center" Width="58" Height="25"/>
                         <Button Content="Clear" Grid.Column="1" 
-                                Command="{Binding ClearSCList}"
+                                Command="{Binding MBModel.ClearSCList}"
                                 HorizontalAlignment="Center" VerticalAlignment="Center" 
                                 Width="70" Height="25"/>
                     </Grid>
@@ -253,10 +252,10 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <ProgressBar Margin="0,4,0,-19"
-                                     Value="{Binding WriteSCoilProgressBar,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                     Value="{Binding MBModel.WriteSCoilProgressBar,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                     </Grid>
                 </StackPanel>
-                <ListView Grid.Column="2" Margin="5,0,24,10" ItemsSource="{Binding Items}" FontWeight="Bold">
+                <ListView Grid.Column="2" Margin="5,0,24,10" ItemsSource="{Binding MBModel.Items}" FontWeight="Bold">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
@@ -294,13 +293,13 @@
                                  Text="{Binding SlaveID,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
                                  Margin="3,0,10,5" Grid.Column="1"/>
                         <TextBox x:Name="txtWriteMultiAddress" Grid.Row="1" 
-                                 Text="{Binding Address,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
+                                 Text="{Binding MCAddress,Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"
                                  Margin="3,0,10,5" Grid.Column="1"/>
                         <ComboBox Grid.Row="2" x:Name="CombWriteMultiCoil" 
                                    ItemsSource="{Binding Path=Persons}"    
                                    SelectedItem="{Binding Path=SPerson}"  
                                    DisplayMemberPath="Name"
-                                  Margin="3,0,10,21" Grid.Column="1"/>
+                                  Margin="3,0,10,21" Grid.Column="1" IsEnabled="False"/>
                     </Grid>
                     <GroupBox Header="Value" Height="40" Width="157">
                         <Grid Margin="0,0,46,0">
@@ -314,7 +313,7 @@
                                          IsChecked="{Binding radioOffMulti, Mode=TwoWay}"/>
                         </Grid>
                     </GroupBox>
-                    <GroupBox Header="Check Coils Number" Height="40">
+                    <GroupBox Header="Select Coils Numbers" Height="40">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -341,7 +340,7 @@
                                 Command="{Binding CmdWriteMultiCoil}"
                                 Margin="5" VerticalAlignment="Top" Height="25" Width="50"/>
                         <Button Content="Clear" Grid.Column="1" 
-                                Command="{Binding ClearMCList}"
+                                Command="{Binding MBModel.ClearMCList}"
                                 HorizontalAlignment="Center" VerticalAlignment="Center"
                                 Height="25" Width="54"/>
                     </Grid>
@@ -350,10 +349,10 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <ProgressBar Margin="0,2,0,-16"
-                        Value="{Binding WriteMCoilProgressBar,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                        Value="{Binding MBModel.WriteMCoilProgressBar,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                     </Grid>
                 </StackPanel>
-                <ListView Grid.Column="1" Margin="10,10,10,25" ItemsSource="{Binding WriteMCoil,Mode=OneWay}" FontWeight="Bold">
+                <ListView Grid.Column="1" Margin="10,10,10,25" ItemsSource="{Binding MBModel.WriteMCoil,Mode=OneWay}" FontWeight="Bold">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
