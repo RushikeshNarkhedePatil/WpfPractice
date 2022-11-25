@@ -12,7 +12,7 @@
         prism:ViewModelLocator.AutoWireViewModel="True"
         mc:Ignorable="d"
         Title="{Binding Header, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-        Height="690" Width="830" 
+        Height="688" Width="896" 
         Background="AntiqueWhite">
     <Grid Margin="0,0,0,18">
         <!--Grid for four Main Group Box-->
@@ -55,16 +55,18 @@
                         <Label Grid.Row="4" Grid.Column="0" Content="Stop Bit" Margin="10,0,0,0"/>
                         <TextBox x:Name="txtPort" Grid.Row="0" Grid.Column="1" Text="{Binding PortName, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
                         <TextBox x:Name="txtBaudRate" Grid.Row="1" Grid.Column="1" Text="{Binding BaudRate, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
-                        <TextBox x:Name="txtData" Grid.Row="2" Grid.Column="1" Text="{Binding DataBits, Mode=TwoWay,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5"/>
+                        <TextBox x:Name="txtData" Grid.Row="2" Grid.Column="1" Text="{Binding DataBits, Mode=TwoWay,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,5" IsEnabled="False"/>
                         <ComboBox x:Name="CombParityBit" Grid.Row="2" Grid.Column="1" Margin="0,22,10,5" Grid.RowSpan="2" 
                                    ItemsSource="{Binding Path=PBits}"
-                                   SelectedItem="{Binding Path=SPBits}" 
+                                   SelectedItem="{Binding Path=SPBits}"
+                                   IsSynchronizedWithCurrentItem="True"
                                    DisplayMemberPath="Name">
                         </ComboBox>
                         <ComboBox x:Name="CombStopBit" Grid.Row="3" 
                                    ItemsSource="{Binding Path=CombStopBits}"    
                                    SelectedItem="{Binding Path=SCombStopBits}"  
                                    DisplayMemberPath="Name"
+                                  IsSynchronizedWithCurrentItem="True"
                                   Grid.Column="1" Margin="0,23,10,5" Grid.RowSpan="2">
                         </ComboBox>
                         <Button x:Name="btnOpen" Content="Open"  Command="{Binding ClickCommandOpen}"  
@@ -82,8 +84,10 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <RadioButton Content="RTU" x:Name="radioRTU" Grid.Column="0" Margin="0,0,8,0" IsChecked="{Binding RTU, Mode=TwoWay}" />
-                        <RadioButton Content="ASCII" Grid.Column="1" Margin="0,0,0,10" IsChecked="{Binding ASCII, Mode=TwoWay}"/>
+                        <RadioButton Content="RTU" x:Name="radioRTU" Command="{Binding RadioRTU}"
+                                     Grid.Column="0" Margin="0,0,8,0" IsChecked="{Binding RTU, Mode=TwoWay}" />
+                        <RadioButton Content="ASCII" Grid.Column="1" Command="{Binding RadioASCII}"
+                                     Margin="0,0,0,10" IsChecked="{Binding ASCII, Mode=TwoWay}"/>
                     </Grid>
                 </GroupBox>
             </Grid>
@@ -150,16 +154,16 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Content="Read" Command="{Binding ClickCommandRead}"  Margin="13,2,5,2"/>
-                        <Button Content="Clear" Command="{Binding ClearReadList}" Grid.Column="1"  Margin="2"/>
+                        <Button Content="Read" Command="{Binding ClickCommandRead}"  Margin="13,2,5,2" FontWeight="Bold"/>
+                        <Button Content="Clear" Command="{Binding MBModel.ClearReadList}" Grid.Column="1"  Margin="2" FontWeight="Bold"/>
                     </Grid>
                     <ProgressBar x:Name="readProgressBar"
-                                 Value="{Binding ReadCoilProgressBar,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                                 Value="{Binding MBModel.ReadCoilProgressBar,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                                  Height="15"  Margin="11,2"/>
                 </StackPanel>
                 <ListView Grid.Column="1" x:Name="lstRead"
                           Margin="23,5,10,9" 
-                          ItemsSource="{Binding Read, Mode=OneWay}" FontWeight="Bold">
+                          ItemsSource="{Binding MBModel.Read, Mode=OneWay}" FontWeight="Bold">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
@@ -241,11 +245,11 @@
                         </Grid.ColumnDefinitions>
                         <Button Content="Write" HorizontalAlignment="Center" 
                                 Command="{Binding CmdWriteSingleCoil}"
-                                VerticalAlignment="Center" Width="58" Height="25"/>
+                                VerticalAlignment="Center" Width="68" Height="25" FontWeight="Bold"/>
                         <Button Content="Clear" Grid.Column="1" 
                                 Command="{Binding MBModel.ClearSCList}"
                                 HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                Width="70" Height="25"/>
+                                Width="68" Height="25" FontWeight="Bold"/>
                     </Grid>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -255,7 +259,9 @@
                                      Value="{Binding MBModel.WriteSCoilProgressBar,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                     </Grid>
                 </StackPanel>
-                <ListView Grid.Column="2" Margin="5,0,24,10" ItemsSource="{Binding MBModel.Items}" FontWeight="Bold">
+                <ListView Grid.Column="2" x:Name="WriteSList"
+                          Margin="10,9,10,10" ItemsSource="{Binding MBModel.Items}" 
+                          FontWeight="Bold">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
@@ -338,11 +344,11 @@
                         </Grid.ColumnDefinitions>
                         <Button Content="Write" HorizontalAlignment="Center" 
                                 Command="{Binding CmdWriteMultiCoil}"
-                                Margin="5" VerticalAlignment="Top" Height="25" Width="50"/>
+                                Margin="2,5,12,0" VerticalAlignment="Top" Height="25" Width="68" FontWeight="Bold"/>
                         <Button Content="Clear" Grid.Column="1" 
                                 Command="{Binding MBModel.ClearMCList}"
                                 HorizontalAlignment="Center" VerticalAlignment="Center"
-                                Height="25" Width="54"/>
+                                Height="25" Width="68" Margin="11,5,21,5" FontWeight="Bold"/>
                     </Grid>
                     <Grid>
                         <Grid.RowDefinitions>

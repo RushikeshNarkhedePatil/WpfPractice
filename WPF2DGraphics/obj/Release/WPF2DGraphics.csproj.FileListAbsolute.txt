@@ -1,0 +1,15 @@
+C:\Users\varad\source\repos\PracticeWPF\WPF2DGraphics\bin\Release\WPF2DGraphics.exe.config
+C:\Users\varad\source\repos\PracticeWPF\WPF2DGraphics\bin\Release\WPF2DGraphics.exe
+C:\Users\varad\source\repos\PracticeWPF\WPF2DGraphics\bin\Release\WPF2DGraphics.pdb
+C:\Users\varad\source\repos\PracticeWPF\WPF2DGraphics\obj\Release\WPF2DGraphics.csproj.AssemblyReference.cache
+C:\Users\varad\source\repos\PracticeWPF\WPF2DGraphics\obj\Release\MainWindow.g.cs
+C:\Users\varad\source\repos\PracticeWPF\WPF2DGraphics\obj\Release\App.g.cs
+C:\Users\varad\source\repos\PracticeWPF\WPF2DGraphics\obj\Release\WPF2DGraphics_MarkupCompile.cache
+C:\Users\varad\source\repos\PracticeWPF\WPF2DGraphics\obj\Release\WPF2DGraphics_MarkupCompile.lref
+C:\Users\varad\source\repos\PracticeWPF\WPF2DGraphics\obj\Release\MainWindow.baml
+C:\Users\varad\source\repos\PracticeWPF\WPF2DGraphics\obj\Release\WPF2DGraphics.g.resources
+C:\Users\varad\source\repos\PracticeWPF\WPF2DGraphics\obj\Release\WPF2DGraphics.Properties.Resources.resources
+C:\Users\varad\source\repos\PracticeWPF\WPF2DGraphics\obj\Release\WPF2DGraphics.csproj.GenerateResource.cache
+C:\Users\varad\source\repos\PracticeWPF\WPF2DGraphics\obj\Release\WPF2DGraphics.csproj.CoreCompileInputs.cache
+C:\Users\varad\source\repos\PracticeWPF\WPF2DGraphics\obj\Release\WPF2DGraphics.exe
+C:\Users\varad\source\repos\PracticeWPF\WPF2DGraphics\obj\Release\WPF2DGraphics.pdb
