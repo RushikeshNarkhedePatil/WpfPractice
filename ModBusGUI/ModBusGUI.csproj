@@ -100,6 +100,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\MBModel.cs" />
+    <Compile Include="Models\MBPLCOperations.cs" />
     <Compile Include="ViewModels\DispatchService.cs" />
     <Compile Include="ViewModels\ItemHandler.cs" />
     <Compile Include="ViewModels\MBViewModel.cs" />

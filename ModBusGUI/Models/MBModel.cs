@@ -15,7 +15,7 @@ using Prism.Commands;
 
 namespace ModBusGUI.Models
 {
-    public class MBModel:BindableBase
+    public class MBModel : BindableBase
     {
         //private MBViewModel viewModel;
         private readonly ItemHandler _itemHandler;
@@ -24,41 +24,44 @@ namespace ModBusGUI.Models
         private IModbusSerialMaster masterRtu;
         public bool[] ReadCoilData = { false, false, false, false };
         public bool[] ReadInputData = { false, false, false, false };
+        private MBPLCOperations mBPLC;
+        private bool status = false;
         public MBModel()
         {
             _itemHandler = new ItemHandler();
-            ClearSCList = new DelegateCommand(ClearSCoilList);
-            ClearMCList = new DelegateCommand(ClearMCoilList);
-            ClearReadList = new DelegateCommand(ClearCoilAndInput);
+            mBPLC = new MBPLCOperations();
+            //ClearSCList = new DelegateCommand(ClearSCoilList);
+            //ClearMCList = new DelegateCommand(ClearMCoilList);
+            //ClearReadList = new DelegateCommand(ClearCoilAndInput);
             //ClickCommandClose = new DelegateCommand(CloseConnection);
             //_itemHandler.AutoCoilAdd(new AutoCoilItem("Hello"));
         }
-        public ICommand ClearSCList
-        {
-            get;
-            private set;
-        }
-        public ICommand ClearMCList
-        {
-            get;
-            private set;
-        }
-        public ICommand ClearReadList
-        {
-            get;
-            private set;
-        }
-        private void ClearMCoilList()
+        //public ICommand ClearSCList
+        //{
+        //    get;
+        //    private set;
+        //}
+        //public ICommand ClearMCList
+        //{
+        //    get;
+        //    private set;
+        //}
+        //public ICommand ClearReadList
+        //{
+        //    get;
+        //    private set;
+        //}
+        public void ClearMCoilList()
         {
             WriteMCoil.Clear();
             WriteMCoilProgressBar = 0;
         }
-        private void ClearCoilAndInput()
+        public void ClearReadCoilAndInput()
         {
             Read.Clear();
             ReadCoilProgressBar = 0;
         }
-        private void ClearSCoilList()
+        public void ClearSCoilList()
         {
             Items.Clear();
             WriteSCoilProgressBar = 0;
@@ -193,11 +196,10 @@ namespace ModBusGUI.Models
             }
             catch (Exception err)
             {
-                MessageBox.Show(err.Message, "Error");
+                MessageBox.Show(err.Message, "Error",MessageBoxButton.OK,MessageBoxImage.Error);
             }
           
         }
-        public ArrayList arlist = new ArrayList();
         public void ReadCoil(byte slaveAddress, ushort coilAddress, ushort numberOfPoints,string mode)
         {
             if(mode=="RTU")

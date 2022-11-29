@@ -76,7 +76,7 @@
                         <Button x:Name="btnClose" Content="Close" Command="{Binding ClickCommandClose}"
                                 Grid.Row="5" Grid.Column="1" Margin="10,4,20,3" Background="#FFFD1515"/>
                     </Grid>
-                    <ProgressBar x:Name="ProgressBarOpen" Height="15"  Margin="10" Value="{Binding MBModel.ProgressBarOpen,Mode=OneWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"/>
+                    <ProgressBar x:Name="ProgressBarOpen" Height="15"  Margin="10" Value="{Binding ProgressBarOpen,Mode=OneWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
                 <GroupBox Header="Mode" Grid.Column="1" Margin="0,0,10,129">
                     <Grid Height="33" Margin="0,0,17,0">
@@ -155,15 +155,15 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Button Content="Read" Command="{Binding ClickCommandRead}"  Margin="13,2,5,2" FontWeight="Bold"/>
-                        <Button Content="Clear" Command="{Binding MBModel.ClearReadList}" Grid.Column="1"  Margin="2" FontWeight="Bold"/>
+                        <Button Content="Clear" Command="{Binding ClearReadList}" Grid.Column="1"  Margin="2" FontWeight="Bold"/>
                     </Grid>
                     <ProgressBar x:Name="readProgressBar"
-                                 Value="{Binding MBModel.ReadCoilProgressBar,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+                                 Value="{Binding ReadCoilProgressBar,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                                  Height="15"  Margin="11,2"/>
                 </StackPanel>
                 <ListView Grid.Column="1" x:Name="lstRead"
                           Margin="23,5,10,9" 
-                          ItemsSource="{Binding MBModel.Read, Mode=OneWay}" FontWeight="Bold">
+                          ItemsSource="{Binding Read, Mode=OneWay}" FontWeight="Bold">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
@@ -208,7 +208,7 @@
                                  Margin="0,0,10,10"/>
                         <TextBox x:Name="txtSingleCoilData" Grid.Row="2" Grid.Column="1" Text="true" Margin="0,0,10,18" IsEnabled="False"/>
                     </Grid>
-                    <GroupBox Header="Value" Height="45" Width="169">
+                    <GroupBox Header="Value" Height="45" Width="169" Margin="10">
                         <Grid Margin="0,0,23,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
@@ -221,23 +221,6 @@
                             <RadioButton Grid.Row="0" Grid.Column="1" Content="Off" Margin="10,0,10,0" IsChecked="{Binding radioOffSingle, Mode=TwoWay}"/>
                         </Grid>
                     </GroupBox>
-                    <GroupBox Header="Select Coil Number" Height="38">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <RadioButton Grid.Row="0" Grid.Column="0" Content="Coil1" IsChecked="{Binding SingleCoil1, Mode=TwoWay}"/>
-                            <RadioButton Grid.Row="0" Grid.Column="1" Content="Coil2" IsChecked="{Binding SingleCoil2, Mode=TwoWay}"/>
-                            <RadioButton Grid.Row="0" Grid.Column="2" Content="Coil3" IsChecked="{Binding SingleCoil3, Mode=TwoWay}"/>
-                            <RadioButton Grid.Row="0" Grid.Column="3" Content="Coil4" IsChecked="{Binding SingleCoil4, Mode=TwoWay}"/>
-                        </Grid>
-                    </GroupBox>
                     <Grid Height="25">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="57*"/>
@@ -247,7 +230,7 @@
                                 Command="{Binding CmdWriteSingleCoil}"
                                 VerticalAlignment="Center" Width="68" Height="25" FontWeight="Bold"/>
                         <Button Content="Clear" Grid.Column="1" 
-                                Command="{Binding MBModel.ClearSCList}"
+                                Command="{Binding ClearSCList}"
                                 HorizontalAlignment="Center" VerticalAlignment="Center" 
                                 Width="68" Height="25" FontWeight="Bold"/>
                     </Grid>
@@ -255,12 +238,12 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <ProgressBar Margin="0,4,0,-19"
-                                     Value="{Binding MBModel.WriteSCoilProgressBar,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                        <ProgressBar Margin="0,15,0,-29"
+                                     Value="{Binding WriteSCoilProgressBar,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                     </Grid>
                 </StackPanel>
                 <ListView Grid.Column="2" x:Name="WriteSList"
-                          Margin="10,9,10,10" ItemsSource="{Binding MBModel.Items}" 
+                          Margin="10,9,10,10" ItemsSource="{Binding Items}" 
                           FontWeight="Bold">
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -346,7 +329,7 @@
                                 Command="{Binding CmdWriteMultiCoil}"
                                 Margin="2,5,12,0" VerticalAlignment="Top" Height="25" Width="68" FontWeight="Bold"/>
                         <Button Content="Clear" Grid.Column="1" 
-                                Command="{Binding MBModel.ClearMCList}"
+                                Command="{Binding ClearMCList}"
                                 HorizontalAlignment="Center" VerticalAlignment="Center"
                                 Height="25" Width="68" Margin="11,5,21,5" FontWeight="Bold"/>
                     </Grid>
@@ -355,10 +338,10 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <ProgressBar Margin="0,2,0,-16"
-                        Value="{Binding MBModel.WriteMCoilProgressBar,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                        Value="{Binding WriteMCoilProgressBar,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                     </Grid>
                 </StackPanel>
-                <ListView Grid.Column="1" Margin="10,10,10,25" ItemsSource="{Binding MBModel.WriteMCoil,Mode=OneWay}" FontWeight="Bold">
+                <ListView Grid.Column="1" Margin="10,10,10,25" ItemsSource="{Binding WriteMCoil,Mode=OneWay}" FontWeight="Bold">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
@@ -378,7 +361,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <GroupBox Header="Coil Status" Margin="4,0,0,-3">
-                    <ListView x:Name="ListViewAutoCoil" ItemsSource="{Binding MBModel.AutoCoil}" FontWeight="Normal" Margin="2">
+                    <ListView x:Name="ListViewAutoCoil" ItemsSource="{Binding AutoCoil}" FontWeight="Normal" Margin="2">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel>
@@ -390,7 +373,7 @@
                     </ListView>
                 </GroupBox>
                 <GroupBox Grid.Column="1" Header="Input Status" Margin="0,0,-1,-6">
-                    <ListView x:Name="ListViewAutoInput" ItemsSource="{Binding MBModel.AutoInput}" FontWeight="Normal" Margin="2">
+                    <ListView x:Name="ListViewAutoInput" ItemsSource="{Binding AutoInput}" FontWeight="Normal" Margin="2">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel>

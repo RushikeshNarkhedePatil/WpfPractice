@@ -6,6 +6,7 @@ using System.Windows;
 using System.IO.Ports;
 using System;
 using System.Collections.ObjectModel;
+using System.Threading;
 
 namespace ModBusGUI.ViewModels
 {
@@ -14,6 +15,8 @@ namespace ModBusGUI.ViewModels
     {
         private SerialPort serialPort = new SerialPort(); //Create a new SerialPort object.
         private MBModel mbModel;
+        private MBPLCOperations MBPLC;
+       // private MBDisplayOutput MBDisplayOutput;
         private string _Title = "ModBus Project";
         private Parity parity;
         private StopBits stopBits;
@@ -29,13 +32,14 @@ namespace ModBusGUI.ViewModels
         private ushort TempSAddress;
         private ushort TempMAddress;
         private ushort _Quentity = 4;
-        private int SingleCoilPosition;
+        //private int SingleCoilPosition;
         private ushort TempReadCoilAddresss;
-        //private bool WriteCoil = false;
+        private bool WriteCoil = false;
         private string Mode;
         private bool PortStatus = false;
         public bool[] ReadCoilData = { false, false, false, false };
         private bool[] WriteMultiCoilData = { false, false, false, false };
+        private bool status = false;
        //private bool validateDataStatus;
 
         public string Header
@@ -48,8 +52,9 @@ namespace ModBusGUI.ViewModels
         public readonly ItemHandler _itemHandler;
         public MBViewModel()
         {
-
+            MBPLC = new MBPLCOperations();
             mbModel = new MBModel();
+            //MBDisplayOutput = new MBDisplayOutput();
             // Set Check Box and Radio Button Values
             CheckCoil1 = true;
             RTU = true;
@@ -65,9 +70,9 @@ namespace ModBusGUI.ViewModels
             ClickCommandClose = new DelegateCommand(CloseConnection);
             RadioRTU = new DelegateCommand(SetRTUValue);
             RadioASCII = new DelegateCommand(SetASCIIValue);
-            //ClearReadList = new DelegateCommand(ClearCoilAndInput);
-            //ClearSCList = new DelegateCommand(ClearSCoilList);
-            //ClearMCList = new DelegateCommand(ClearMCoilList);
+            ClearReadList = new DelegateCommand(ClrReadList);
+            ClearSCList = new DelegateCommand(ClrSList);
+            ClearMCList = new DelegateCommand(ClrMList);
 
             _itemHandler = new ItemHandler();
             //_itemHandler.Add(new Item("John Doe"));
@@ -101,6 +106,28 @@ namespace ModBusGUI.ViewModels
             ScombReadAddresses = combReadAddresses[0];
         }// MBViewModel Constructer End
 
+        private void ClrMList()
+        {
+            //mbModel.ClearMCoilList();
+            WriteMCoil.Clear();
+            WriteMCoilProgressBar = 0;
+        }
+
+        private void ClrSList()
+        {
+            //mbModel.ClearSCoilList();
+            Items.Clear();
+            WriteSCoilProgressBar = 0;
+
+        }
+
+        private void ClrReadList()
+        {
+            //mbModel.ClearReadCoilAndInput();
+            Read.Clear();
+            ReadCoilProgressBar = 0;
+        }
+
         private void SetRTUValue()  //set radio values after click
         {
             DataBits = 8;
@@ -123,14 +150,14 @@ namespace ModBusGUI.ViewModels
         {
             get { return _itemHandler.WriteMCoil; }
         }
-        //public ObservableCollection<AutoCoilItem> AutoCoil
-        //{
-        //    get { return _itemHandler.AutoCoil; }
-        //}
-        //public ObservableCollection<AutoInputItem> AutoInput
-        //{
-        //    get { return _itemHandler.AutoInput; }
-        //}
+        public ObservableCollection<AutoCoilItem> AutoCoil
+        {
+            get { return _itemHandler.AutoCoil; }
+        }
+        public ObservableCollection<AutoInputItem> AutoInput
+        {
+            get { return _itemHandler.AutoInput; }
+        }
         //********************************************Demo Combo Box**********************************************//
         private ObservableCollection<Person> _persons;
         private ObservableCollection<CombParityBit> _PBits; 
@@ -229,6 +256,17 @@ namespace ModBusGUI.ViewModels
             get;
             private set;
         }
+        public ICommand ClearSCList
+        {
+            get;
+            private set;
+        }
+
+        public ICommand ClearReadList
+        {
+            get;
+            private set;
+        }
         public ICommand ClickCommandOpen
         {
             get;
@@ -250,8 +288,59 @@ namespace ModBusGUI.ViewModels
             private set;
         }
 
-
         //********************************************Functions**************************************************************//
+        //*******************************************Auto Coil****************************************************************//
+        public void AutoCoilStatus()
+        {
+            if (status)
+            {
+                timeCB = new TimerCallback(MBPLC.PrintCoil);
+                System.Threading.Timer t = new System.Threading.Timer(
+                timeCB,
+                "Hi",
+                0,
+                1000);
+
+                if (MBPLC.status)
+                {
+                    DispatchService.Invoke(() =>
+                    {
+
+                        foreach (var item in MBPLC.ReadCoilData)
+                        {
+                            _itemHandler.AutoCoilAdd(new AutoCoilItem(item.ToString()));
+
+                        }
+                        if (AutoCoil.Count >= 5)
+                        {
+                            AutoCoil.Clear();
+                        }
+
+                    });
+                }
+                else
+                {
+                    MessageBox.Show("Check Connection");
+                }
+            }
+        }
+        //public void AutoCoilDisplay()
+        //{
+        //    DispatchService.Invoke(() =>
+        //    {
+
+        //        foreach (var item in ReadCoilData)
+        //        {
+        //            _itemHandler.AutoCoilAdd(new AutoCoilItem(item.ToString()));
+
+        //        }
+        //        if (AutoCoil.Count >= 5)
+        //        {
+        //            AutoCoil.Clear();
+        //        }
+
+        //    });
+        //}
         public string CheckMode()
         {
             if(RTU)
@@ -264,46 +353,47 @@ namespace ModBusGUI.ViewModels
             }
             return "-1";
         }
-        private bool validateInformation()
-        {
-            // Set all Values
-            var ReqParityBit = serialPort.Parity.ToString();
-            var ReqStopBit = serialPort.StopBits.ToString();
-            int ReqDataBit =serialPort.DataBits;
-            int ReqBaudRate = serialPort.BaudRate;
-            string ReqCompPort = serialPort.PortName;
-            //var ReqMode= ModbusSerialMaster.CreateRtu(serialPort).ToString();
-            if(ReqDataBit!=DataBits)
-            {
-                MessageBox.Show("Not Supported Communication Mode? Check Communication Mode again and Try","Message",MessageBoxButton.OK,MessageBoxImage.Warning);
-                return false;
-            }
-            else if (ReqParityBit== _SPBits.Name &&ReqStopBit==_SCombStopBits.Name&&ReqDataBit==_DataBits&&ReqBaudRate==BaudRate)
-            {
-                return true;
-            }
-            else
-            {
-                MessageBoxResult result = MessageBox.Show("Please Check all Information Correct Or Not\n"+ "Do you want Any suggestion?", "suggestion",
-                    MessageBoxButton.YesNo, MessageBoxImage.Information);
-                if (result == MessageBoxResult.Yes)
-                {
-                    MessageBox.Show("ParityBit  \t = "+ReqParityBit+"\n"+ 
-                        "StopBits\t = " + ReqStopBit +"\n"+
-                        "CompPort = " + ReqCompPort + "\n" +
-                        "DataBits\t = " + ReqDataBit.ToString() + "\n" +
-                        "BaudRate = " + ReqBaudRate.ToString(),"Suggestion",MessageBoxButton.OK,MessageBoxImage.Warning);
-                }
-                else
-                {
-                    // No code here  
-                }
-                return false;
-            }
-        }
+        //private bool validateInformation()
+        //{
+        //    Set all Values
+        //   var ReqParityBit = serialPort.Parity.ToString();
+        //    var ReqStopBit = serialPort.StopBits.ToString();
+        //    int ReqDataBit = serialPort.DataBits;
+        //    int ReqBaudRate = serialPort.BaudRate;
+        //    string ReqCompPort = serialPort.PortName;
+        //    var ReqMode = ModbusSerialMaster.CreateRtu(serialPort).ToString();
+        //    if (ReqDataBit != DataBits)
+        //    {
+        //        MessageBox.Show("Not Supported Communication Mode? Check Communication Mode again and Try", "Message", MessageBoxButton.OK, MessageBoxImage.Warning);
+        //        return false;
+        //    }
+        //    else if (ReqParityBit == _SPBits.Name && ReqStopBit == _SCombStopBits.Name && ReqDataBit == _DataBits && ReqBaudRate == BaudRate)
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        MessageBoxResult result = MessageBox.Show("Please Check all Information Correct Or Not\n" + "Do you want Any suggestion?", "suggestion",
+        //            MessageBoxButton.YesNo, MessageBoxImage.Information);
+        //        if (result == MessageBoxResult.Yes)
+        //        {
+        //            MessageBox.Show("ParityBit  \t = " + ReqParityBit + "\n" +
+        //                "StopBits\t = " + ReqStopBit + "\n" +
+        //                "CompPort = " + ReqCompPort + "\n" +
+        //                "DataBits\t = " + ReqDataBit.ToString() + "\n" +
+        //                "BaudRate = " + ReqBaudRate.ToString(), "Suggestion", MessageBoxButton.OK, MessageBoxImage.Warning);
+        //        }
+        //        else
+        //        {
+        //            No code here
+        //        }
+        //        return false;
+        //    }
+        //}
         private void OpenConnection()
         {
             Mode = CheckMode();
+            
             if (SPBits== null || SCombStopBits == null||RTU==false&&ASCII==false||PortName==null||BaudRate==0||DataBits==0)
             {
                 MessageBox.Show("Please fill all values","Message");
@@ -315,51 +405,94 @@ namespace ModBusGUI.ViewModels
                 stopBits = serialPort.StopBits = (StopBits)Enum.Parse(typeof(StopBits), _SCombStopBits.Name);
                 if(serialPort.DataBits!=DataBits)
                 {
-                    MessageBox.Show("Not Supported Communication Mode", "Warning", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Not Supported Communication Mode", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                else if (RTU)
+                status = MBPLC.OpenConnection(_PortName, _BaudRate, parity, _DataBits, stopBits, Mode);
+                if (status)
                 {
-                    mbModel.OpenConnectionRTU(_PortName, _BaudRate, parity, _DataBits, stopBits, Mode);           // Call Open Connection
-                }
-                else if (ASCII)
-                {
-                    mbModel.OpenConnectionASCII(_PortName, _BaudRate, parity, _DataBits, stopBits, Mode);           // Call Open Connection
+                    ProgressBarOpen = 100;
+                    AutoCoilStatus();
                 }
             } 
         }
         public void CloseConnection()
         {
-            mbModel.CloseConnection();
-           // _itemHandler.AutoCoilAdd(new AutoCoilItem("Hello"));
+            //mbModel.CloseConnection();
+            // _itemHandler.AutoCoilAdd(new AutoCoilItem("Hello"));
             //ProgressBarOpen = 0;
+            status = MBPLC.CloseConnection();
+            if (status)
+            {
+                //serialPort.Close();
+                ProgressBarOpen = 0;
+                ReadCoilProgressBar = 0;
+                WriteMCoilProgressBar = 0;
+                WriteSCoilProgressBar = 0;
+                Read.Clear();
+                Items.Clear();
+                WriteMCoil.Clear();
+                //AutoCoil.Clear();
+                //AutoInput.Clear();
+            }
+            else
+            {
+                MessageBox.Show("Connection already Close");
+            }
         }
         private void ReadCoilAndInput()
         {
 
             if (_Coil&&ScombReadAddresses!=null&&_SlaveID!=0&&_Quentity!=0)
             {
-                PortStatus=mbModel.CheckPortOnOff();    // check on off serial port connection
-                if (PortStatus)
+                //Mode = CheckMode(); // Check communication mode RTU or ASCII
+                TempReadCoilAddresss = ScombReadAddresses.Name;
+                //mbModel.ReadCoil(_SlaveID, TempReadCoilAddresss, _Quentity,Mode);
+                status = MBPLC.ReadCoil(_SlaveID, TempReadCoilAddresss, _Quentity);
+                if (status)
                 {
+                    short i = 0;
+                    if (Read.Count != 0)   // if list is not empty then first clear list then add new item
+                    {
+                        Read.Clear();   // clear list
+                    }
 
-                    Mode = CheckMode(); // Check communication mode RTU or ASCII
-                    TempReadCoilAddresss = ScombReadAddresses.Name;
-                    mbModel.ReadCoil(_SlaveID, TempReadCoilAddresss, _Quentity,Mode);
-              
+                    foreach (var item in MBPLC.ReadCoilData)
+                    {
+                        //DicReadInputCoil.Add("Coil "+i.ToString(),item.ToString());
+                        i++;
+                        _itemHandler.ReadAdd(new ReadItem("Coil" + i.ToString() + "  " + item.ToString()));
+                    }
+                    ReadCoilProgressBar = 100;
                 }
-                else
-                {
-                    MessageBox.Show("Connection is Close Please Check Connection and Try again","Message");
-                }
- 
             }
            
             else if(_Input && ScombReadAddresses != null && _SlaveID != 0 && _Quentity != 0)
             {
                 TempReadCoilAddresss = ScombReadAddresses.Name;
                 //MessageBox.Show("Click On Input");
-                mbModel.ReadInput(_SlaveID, TempReadCoilAddresss, _Quentity);
-               
+                //mbModel.ReadInput(_SlaveID, TempReadCoilAddresss, _Quentity);
+                status = MBPLC.ReadInput(_SlaveID, TempReadCoilAddresss, _Quentity);
+                if (status)
+                {
+                    short i = 0;
+                    if (Read.Count != 0)   // if list is not empty then first clear list then add new item
+                    {
+                        Read.Clear();   // clear list
+                    }
+
+                    foreach (var item in MBPLC.ReadInputData)
+                    {
+                        //DicReadInputCoil.Add("Coil "+i.ToString(),item.ToString());
+                        i++;
+                        _itemHandler.ReadAdd(new ReadItem("Input" + i.ToString() + "  " + item.ToString()));
+                    }
+                    ReadCoilProgressBar = 100;
+                }
+                else
+                {
+                    MessageBox.Show("Check Connection");
+                }
+
             }
             else
             {
@@ -407,50 +540,50 @@ namespace ModBusGUI.ViewModels
         }
         public void WriteSingleCoil()
         {
-            SingleCoilPosition = CheckSingleCoilPosition();     // check coil position status
+            //SingleCoilPosition = CheckSingleCoilPosition();     // check coil position status
             TempSAddress = Address;
-            for (int i = 0; i < SingleCoilPosition; i++)        // find coil position
-            {
-                TempSAddress++;
-            }
-            if (SingleCoilPosition == -1)          // filter
-            {
-                MessageBox.Show("Select Coil ", "Information",MessageBoxButton.OK,MessageBoxImage.Information);
-                return;
-            }
 
             if (radioOnSingle)
             {
-               
-                if (RTU||ASCII)
+                //mbModel.WriteSingleCoil(_SlaveID, TempSAddress, true,Mode);
+                status=MBPLC.WriteSingleCoil(_SlaveID, TempSAddress, true);
+                if(status)
                 {
-                   mbModel.WriteSingleCoil(_SlaveID, TempSAddress, true,Mode);
-                    //mbModel.ReadCoil(_SlaveID, 3999, _Quentity);  //update Coil Data
-                    //_itemHandler.Add(new Item("true"));
-                    //WriteSCoilProgressBar = 100;
+                    if (Items.Count >= 8)
+                    {
+                        Items.Clear();
+                    }
+                    _itemHandler.Add(new Item(true.ToString()));
+                    WriteSCoilProgressBar = 100;
+                    AutoCoilStatus();
                 }
-                else 
+                else
                 {
-                    MessageBox.Show("Check Connection","Message",MessageBoxButton.OK,MessageBoxImage.Information);
+                    MessageBox.Show("Check Connection");
                 }
-
             }
             else if(radioOffSingle)
             {
-                if (RTU)
+                //mbModel.WriteSingleCoil(_SlaveID, TempSAddress, false,Mode);
+                status=MBPLC.WriteSingleCoil(_SlaveID, TempSAddress, false);
+                if (status)
                 {
-                    mbModel.WriteSingleCoil(_SlaveID, TempSAddress, false,Mode);
-                    //_itemHandler.Add(new Item("false"));
-                    //WriteSCoilProgressBar = 100;
+                    if (Items.Count >= 8)
+                    {
+                        Items.Clear();
+                    }
+                    _itemHandler.Add(new Item(false.ToString()));
+                    WriteSCoilProgressBar = 100;
+                    AutoCoilStatus();
                 }
-                else if (ASCII)
+                else
                 {
-                    MessageBox.Show("ASCII emplementation remaining");
+                    MessageBox.Show("Check Connection");
                 }
             }
             else
             {
-                MessageBox.Show("Plaese Select Value ON or OFF");
+                MessageBox.Show("Plaese Select Value ON or OFF", "Message", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
         }
@@ -506,11 +639,29 @@ namespace ModBusGUI.ViewModels
         {
             TempMAddress = MCAddress;
             //_itemHandler.WriteMAdd(new WriteItem(SPerson.Name));
-            WriteMultiCoilData = mbModel.MultiStatus(_SlaveID, TempMAddress, _Quentity,Mode); // check status
+            WriteMultiCoilData = MBPLC.MultiStatus(_SlaveID, TempMAddress, _Quentity); // check status
             if (radioOnMulti && (CheckCoil1 || CheckCoil2 || CheckCoil3 || CheckCoil4))
             {
                 MultiOnCoilStatus();
-                mbModel.WriteMultiCoils(_SlaveID, TempMAddress, WriteMultiCoilData, Mode);      // call write multi coil method
+                //mbModel.WriteMultiCoils(_SlaveID, TempMAddress, WriteMultiCoilData, Mode);      // call write multi coil method
+                status=MBPLC.WriteMultiCoils(_SlaveID, TempMAddress, WriteMultiCoilData);      // call write multi coil method
+                if(status)
+                {
+                    if (WriteMCoil.Count <= 4)
+                    {
+                        WriteMCoil.Clear();
+                    }
+                    foreach (var item in WriteMultiCoilData)
+                    {
+                        _itemHandler.WriteMAdd(new WriteItem(item.ToString()));
+                    }
+                    WriteMCoilProgressBar = 100;
+                    AutoCoilStatus();
+                }
+                else
+                {
+                    MessageBox.Show("Check Connection");
+                }
                 //if (WriteMCoil.Count <= 4)
                 //{
                 //    WriteMCoil.Clear();
@@ -525,7 +676,24 @@ namespace ModBusGUI.ViewModels
             {
                 TempMAddress = MCAddress;
                 MultiOffCoilStatus();
-                mbModel.WriteMultiCoils(_SlaveID, TempMAddress, WriteMultiCoilData, Mode);      // call write multi coil method
+                MBPLC.WriteMultiCoils(_SlaveID, TempMAddress, WriteMultiCoilData);      // call write multi coil method
+                if (status)
+                {
+                    if (WriteMCoil.Count <= 4)
+                    {
+                        WriteMCoil.Clear();
+                    }
+                    foreach (var item in WriteMultiCoilData)
+                    {
+                        _itemHandler.WriteMAdd(new WriteItem(item.ToString()));
+                    }
+                    WriteMCoilProgressBar = 100;
+                    AutoCoilStatus();
+                }
+                else
+                {
+                    MessageBox.Show("Check Connection");
+                }
                 //if (WriteMCoil.Count <= 4)
                 //{
                 //    WriteMCoil.Clear();
@@ -815,6 +983,8 @@ namespace ModBusGUI.ViewModels
             }
         }
         private double _WriteMCoilProgressBar = 0;
+        private TimerCallback timeCB;
+
         public double WriteMCoilProgressBar
         {
             get { return _WriteMCoilProgressBar; }
